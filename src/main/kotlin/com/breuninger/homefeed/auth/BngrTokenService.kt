@@ -1,5 +1,6 @@
 package com.breuninger.homefeed.auth
 
+import com.breuninger.homefeed.shared.BngrJwtClaims
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
 import org.springframework.security.oauth2.jwt.JwtEncoder
@@ -34,9 +35,9 @@ class BngrTokenService(
             .subject(user.email)
             .issuedAt(now)
             .expiresAt(now.plus(TOKEN_TTL))
-            .claim("firstName", user.firstName)
-            .claim("lastName", user.lastName)
-            .claim("gender", user.gender.name)
+            .claim(BngrJwtClaims.FIRST_NAME, user.firstName)
+            .claim(BngrJwtClaims.LAST_NAME, user.lastName)
+            .claim(BngrJwtClaims.GENDER, user.gender.name)
             .build()
         val token = jwtEncoder.encode(JwtEncoderParameters.from(claims))
         return BngrIssuedToken(accessToken = token.tokenValue, expiresInSeconds = TOKEN_TTL.seconds)

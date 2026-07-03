@@ -1,5 +1,6 @@
 package com.breuninger.homefeed.orders
 
+import com.breuninger.homefeed.feed.domain.BngrFeedSlots
 import com.breuninger.homefeed.feed.domain.BngrFeedContext
 import com.breuninger.homefeed.feed.domain.BngrFeedModule
 import com.breuninger.homefeed.feed.domain.BngrFeedPurchase
@@ -19,7 +20,7 @@ class BngrOrderHistoryModuleProvider(
     private val simulator: BngrBackendSimulator,
 ) : BngrModuleProvider {
 
-    override val order = 50
+    override val order = BngrFeedSlots.ORDER_HISTORY
 
     override suspend fun provide(context: BngrFeedContext): BngrFeedModule? {
         val user = context.user ?: return null

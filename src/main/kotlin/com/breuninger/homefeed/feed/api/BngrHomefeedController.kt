@@ -1,5 +1,7 @@
 package com.breuninger.homefeed.feed.api
 
+import com.breuninger.homefeed.shared.BngrJwtClaims
+import com.breuninger.homefeed.shared.BngrApiPaths
 import com.breuninger.homefeed.feed.domain.BngrFeedContext
 import com.breuninger.homefeed.feed.domain.BngrFeedUser
 import com.breuninger.homefeed.feed.domain.BngrHomefeedService
@@ -95,7 +97,7 @@ class BngrHomefeedController(private val homefeedService: BngrHomefeedService) {
         description = "An Authorization header was sent but the token is invalid or expired. Omit the header entirely for the anonymous feed.",
         content = [Content(mediaType = "application/problem+json", schema = Schema(implementation = BngrProblemResponse::class))],
     )
-    @GetMapping("/api/v1/homefeed")
+    @GetMapping(BngrApiPaths.HOMEFEED)
     suspend fun homefeed(authentication: Authentication?): BngrHomefeedResponse {
         val feed = homefeedService.assembleFeed(authentication.toFeedContext())
         return BngrHomefeedResponse(
@@ -114,8 +116,8 @@ private fun Authentication?.toFeedContext(): BngrFeedContext {
     return BngrFeedContext(
         BngrFeedUser(
             email = jwt.subject,
-            firstName = jwt.getClaimAsString("firstName").orEmpty(),
-            lastName = jwt.getClaimAsString("lastName").orEmpty(),
+            firstName = jwt.getClaimAsString(BngrJwtClaims.FIRST_NAME).orEmpty(),
+            lastName = jwt.getClaimAsString(BngrJwtClaims.LAST_NAME).orEmpty(),
         ),
     )
 }

@@ -22,12 +22,12 @@ class BngrWebConfig(
 
     /** /scalar serves the Scalar API reference (static/scalar.html renders /v3/api-docs). */
     override fun addViewControllers(registry: ViewControllerRegistry) {
-        registry.addRedirectViewController("/scalar", "/scalar.html")
+        registry.addRedirectViewController(BngrApiPaths.SCALAR, BngrApiPaths.SCALAR_HTML)
     }
 
     /** Strictness is scoped to our API — actuator and docs keep their own conventions. */
     override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(unknownParameterInterceptor).addPathPatterns("/api/**")
+        registry.addInterceptor(unknownParameterInterceptor).addPathPatterns("${BngrApiPaths.API_V1}/**")
     }
 
     @Bean
@@ -46,19 +46,19 @@ class BngrWebConfig(
         .components(
             Components()
                 .addSecuritySchemes(
-                    "bearerAuth",
+                    BngrSecuritySchemes.BEARER,
                     SecurityScheme()
                         .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
-                        .description("Paste a token obtained from /api/v1/auth/login."),
+                        .description("Paste a token obtained from ${BngrApiPaths.AUTH_LOGIN}."),
                 )
                 .addSecuritySchemes(
-                    "oauthPassword",
+                    BngrSecuritySchemes.OAUTH_PASSWORD,
                     SecurityScheme()
                         .type(SecurityScheme.Type.OAUTH2)
                         .description("Live login for the interactive reference: username = email of a demo user, e.g. felix.junghans@breuninger.de / breuninger-demo.")
                         .flows(
                             OAuthFlows().password(
-                                OAuthFlow().tokenUrl("/api/v1/auth/token").scopes(Scopes()),
+                                OAuthFlow().tokenUrl(BngrApiPaths.AUTH_TOKEN).scopes(Scopes()),
                             ),
                         ),
                 ),
@@ -73,10 +73,10 @@ class BngrWebConfig(
      */
     @Bean
     fun bngrOptionalFeedAuthCustomizer(): OpenApiCustomizer = OpenApiCustomizer { api ->
-        api.paths["/api/v1/homefeed"]?.get?.security = listOf(
+        api.paths[BngrApiPaths.HOMEFEED]?.get?.security = listOf(
             SecurityRequirement(), // anonymous is a first-class way to call this endpoint
-            SecurityRequirement().addList("bearerAuth"),
-            SecurityRequirement().addList("oauthPassword"),
+            SecurityRequirement().addList(BngrSecuritySchemes.BEARER),
+            SecurityRequirement().addList(BngrSecuritySchemes.OAUTH_PASSWORD),
         )
     }
 }

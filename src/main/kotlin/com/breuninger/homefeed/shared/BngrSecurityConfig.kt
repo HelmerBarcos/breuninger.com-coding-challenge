@@ -39,10 +39,10 @@ class BngrSecurityConfig {
             .authorizeHttpRequests {
                 it
                     .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/homefeed").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/auth/token").permitAll()
-                    .requestMatchers("/actuator/health/**").permitAll()
-                    .requestMatchers("/v3/api-docs/**", "/scalar", "/scalar.html").permitAll()
+                    .requestMatchers(HttpMethod.GET, BngrApiPaths.HOMEFEED).permitAll()
+                    .requestMatchers(HttpMethod.POST, BngrApiPaths.AUTH_REGISTER, BngrApiPaths.AUTH_LOGIN, BngrApiPaths.AUTH_TOKEN).permitAll()
+                    .requestMatchers("${BngrApiPaths.HEALTH}/**").permitAll()
+                    .requestMatchers("${BngrApiPaths.OPENAPI_SPEC}/**", BngrApiPaths.SCALAR, BngrApiPaths.SCALAR_HTML).permitAll()
                     // non-health actuator endpoints stay gated
                     .requestMatchers("/actuator/**").authenticated()
                     // everything else falls through to MVC so unknown paths answer a 404

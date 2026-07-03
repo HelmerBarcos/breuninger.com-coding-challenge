@@ -1,5 +1,6 @@
 package com.breuninger.homefeed.catalog
 
+import com.breuninger.homefeed.feed.domain.BngrFeedSlots
 import com.breuninger.homefeed.feed.domain.BngrFeedContext
 import com.breuninger.homefeed.feed.domain.BngrFeedModule
 import com.breuninger.homefeed.feed.domain.BngrFeedProduct
@@ -19,7 +20,7 @@ class BngrSaleBannerModuleProvider(
     private val simulator: BngrBackendSimulator,
 ) : BngrModuleProvider {
 
-    override val order = 20
+    override val order = BngrFeedSlots.SALE_BANNER
 
     override suspend fun provide(context: BngrFeedContext): BngrFeedModule? {
         val campaign = simulator.simulateRemoteCall { campaigns.findFirstByActiveTrue() } ?: return null
@@ -37,7 +38,7 @@ class BngrProductTeaserModuleProvider(
     private val simulator: BngrBackendSimulator,
 ) : BngrModuleProvider {
 
-    override val order = 30
+    override val order = BngrFeedSlots.PRODUCT_TEASER
 
     override suspend fun provide(context: BngrFeedContext): BngrFeedModule? {
         val teaser = simulator.simulateRemoteCall { products.findByOrderByNameAsc(PageRequest.of(0, TEASER_SIZE)) }
@@ -60,7 +61,7 @@ class BngrRecommendationsModuleProvider(
     private val simulator: BngrBackendSimulator,
 ) : BngrModuleProvider {
 
-    override val order = 40
+    override val order = BngrFeedSlots.RECOMMENDATIONS
 
     override suspend fun provide(context: BngrFeedContext): BngrFeedModule? {
         val picks = simulator.simulateRemoteCall { products.findByOrderByNameAsc(PageRequest.of(1, PICKS_SIZE)) }

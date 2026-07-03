@@ -25,8 +25,14 @@ class BngrArchitectureTest {
     val `feed depends on no other domain` =
         noClasses().that().resideInAPackage("..homefeed.feed..")
             .should().dependOnClassesThat()
-            .resideInAnyPackage("..homefeed.catalog..", "..homefeed.orders..", "..homefeed.auth..", "..homefeed.shared..")
+            .resideInAnyPackage("..homefeed.catalog..", "..homefeed.orders..", "..homefeed.auth..")
             .because("domains plug into the feed contract, never the other way around (ADR-001)")
+
+    @ArchTest
+    val `feed domain does not even depend on shared` =
+        noClasses().that().resideInAPackage("..feed.domain..")
+            .should().dependOnClassesThat().resideInAPackage("..homefeed.shared..")
+            .because("the hexagon core stays free of cross-cutting infrastructure; feed.api may use shared constants (ADR-001)")
 
     @ArchTest
     val `catalog depends on no other domain` =

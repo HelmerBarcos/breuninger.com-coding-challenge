@@ -1,5 +1,6 @@
 package com.breuninger.homefeed.feed.greeting
 
+import com.breuninger.homefeed.feed.domain.BngrFeedSlots
 import com.breuninger.homefeed.feed.domain.BngrFeedContext
 import com.breuninger.homefeed.feed.domain.BngrFeedModule
 import com.breuninger.homefeed.feed.domain.BngrGreetingModule
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component
 @Component
 class BngrGreetingModuleProvider : BngrModuleProvider {
 
-    override val order = 10
+    override val order = BngrFeedSlots.GREETING
 
     override suspend fun provide(context: BngrFeedContext): BngrFeedModule =
         BngrGreetingModule(

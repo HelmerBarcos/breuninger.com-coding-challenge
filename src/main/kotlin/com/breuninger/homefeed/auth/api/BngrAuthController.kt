@@ -1,5 +1,6 @@
 package com.breuninger.homefeed.auth.api
 
+import com.breuninger.homefeed.shared.BngrApiPaths
 import com.breuninger.homefeed.auth.BngrGender
 import com.breuninger.homefeed.auth.BngrRegisterUserService
 import com.breuninger.homefeed.auth.BngrRegistration
@@ -73,7 +74,7 @@ data class BngrOAuthTokenResponse(
 
 @RestController
 @Validated
-@RequestMapping("/api/v1/auth")
+@RequestMapping(BngrApiPaths.AUTH)
 @Tag(name = "Auth")
 class BngrAuthController(
     private val registerUserService: BngrRegisterUserService,
