@@ -146,6 +146,11 @@ Die bewusst getroffenen Annahmen hinter dem Design:
   kurz genug für eine Antwort.
 - **Demo-Daten sind ausdrücklich keine Produktionsdaten** (geteiltes
   Demo-Passwort, In-Memory-Signaturschlüssel - beides dokumentiert).
+- **Entwicklungsumgebung**: Das Projekt wird in VS Code geöffnet und in Docker
+  entwickelt. Das Team arbeitet überwiegend auf MacBooks, daher sind die
+  ausführbaren Bash-Skripte (`scripts/dev`) kein Hindernis. Für Windows-Nutzer
+  liegt eine Anleitung unter [`notes/`](notes/windows-fallback-ohne-docker.md) -
+  ungeprüft, da mir kein Windows-Rechner zur Verfügung stand.
 
 ## Decisions
 
