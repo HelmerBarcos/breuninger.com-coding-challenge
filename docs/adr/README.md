@@ -12,3 +12,5 @@ context, honest comparison of options, decision, consequences, enforcement).
 | [005](005-authentication.md) | Authentication: self-issued JWT validated by Spring's resource server | Accepted |
 | [006](006-docker-images.md) | Docker: one multi-stage Dockerfile, distroless prod, bake for multi-arch | Accepted |
 | [007](007-naming-conventions.md) | Naming: business prefix `Bngr` on all our types | Accepted |
+| [008](008-greeting-client-composition.md) | Greeting module: the API sends identity data, not the composed salutation | Accepted |
+| [009](009-database-migrations.md) | Database migrations and seed data with Flyway (SQL-first) | Accepted |
