@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: homefeed
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/homefeed}
+    username: ${SPRING_DATASOURCE_USERNAME:homefeed}
+    password: ${SPRING_DATASOURCE_PASSWORD:homefeed}
+  jpa:
+    # Flyway owns the schema; the ORM only validates it matches the entities (ADR-009)
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+server:
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        # /actuator/health/liveness (no DB) and /actuator/health/readiness (includes DB)
+        enabled: true
+
+homefeed:
+  simulation:
+    # fake latency each module provider pays per simulated backend call (0 in tests)
+    latency: 150ms
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
