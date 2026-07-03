@@ -5,6 +5,8 @@ endpoint delivering an ordered list of typed modules (greeting, sale banner,
 product teaser, recommendations, order history) that the app renders in
 sequence. Spring Boot 3.5 + Kotlin + PostgreSQL.
 
+![Demo](docs/assets/demo.gif)
+
 > **Note:** the development setup has only been tested on **macOS**. Windows users
 > should follow the [WSL2 path](docs/setup/README.md#windows-via-wsl2) in the setup
 > guide (untested).
