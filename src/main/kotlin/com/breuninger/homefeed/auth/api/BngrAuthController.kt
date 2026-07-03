@@ -5,6 +5,7 @@ import com.breuninger.homefeed.auth.BngrRegisterUserService
 import com.breuninger.homefeed.auth.BngrRegistration
 import com.breuninger.homefeed.auth.BngrTokenService
 import com.breuninger.homefeed.auth.BngrUserEntity
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -13,9 +14,11 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.validation.annotation.Validated
@@ -57,6 +60,13 @@ data class BngrTokenResponse(
     val tokenType: String = "Bearer",
 )
 
+@Schema(description = "OAuth2-shaped token response (snake_case fields) so interactive API docs can use the password flow.")
+data class BngrOAuthTokenResponse(
+    @get:JsonProperty("access_token") val accessToken: String,
+    @get:JsonProperty("expires_in") val expiresIn: Long,
+    @get:JsonProperty("token_type") val tokenType: String = "Bearer",
+)
+
 @RestController
 @Validated
 @RequestMapping("/api/v1/auth")
@@ -77,6 +87,21 @@ class BngrAuthController(
     fun login(@RequestBody @Valid request: BngrLoginRequest): BngrTokenResponse {
         val issued = tokenService.login(request.email, request.password)
         return BngrTokenResponse(accessToken = issued.accessToken, expiresInSeconds = issued.expiresInSeconds)
+    }
+
+    /**
+     * Same login, OAuth2 password-grant shape (form-encoded in, snake_case out):
+     * interactive API references (Scalar) authenticate against this live instead
+     * of asking users to paste tokens.
+     */
+    @Operation(summary = "OAuth2-style token endpoint (used by the interactive API reference to fetch tokens live)")
+    @PostMapping("/token", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
+    fun token(
+        @RequestParam username: String,
+        @RequestParam password: String,
+    ): BngrOAuthTokenResponse {
+        val issued = tokenService.login(username, password)
+        return BngrOAuthTokenResponse(accessToken = issued.accessToken, expiresIn = issued.expiresInSeconds)
     }
 }
 

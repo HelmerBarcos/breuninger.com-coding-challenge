@@ -40,7 +40,7 @@ class BngrSecurityConfig {
                 it
                     .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/homefeed").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/register", "/api/v1/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/auth/token").permitAll()
                     .requestMatchers("/actuator/health/**").permitAll()
                     .requestMatchers("/v3/api-docs/**", "/scalar", "/scalar.html").permitAll()
                     // non-health actuator endpoints stay gated

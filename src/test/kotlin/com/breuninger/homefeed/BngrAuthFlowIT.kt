@@ -10,6 +10,8 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.util.LinkedMultiValueMap
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -81,6 +83,24 @@ class BngrAuthFlowIT(@Autowired private val rest: TestRestTemplate) {
 
         val history = feed.get("modules").first { it.get("type").asText() == "order_history" }
         assertEquals(4, history.get("purchases").size())
+    }
+
+    @Test
+    fun `oauth2-shaped token endpoint issues live tokens for the interactive docs`() {
+        val form = HttpHeaders().apply { contentType = MediaType.APPLICATION_FORM_URLENCODED }
+        val body = LinkedMultiValueMap<String, String>().apply {
+            add("username", "helmer.barcos@breuninger.de")
+            add("password", "breuninger-demo")
+        }
+
+        val response = rest.postForEntity("/api/v1/auth/token", HttpEntity(body, form), JsonNode::class.java)
+
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals("Bearer", response.body!!.get("token_type").asText())
+        val token = response.body!!.get("access_token").asText()
+
+        val types = feedWithToken(token).get("modules").map { it.get("type").asText() }
+        assertTrue("order_history" in types)
     }
 
     @Test
