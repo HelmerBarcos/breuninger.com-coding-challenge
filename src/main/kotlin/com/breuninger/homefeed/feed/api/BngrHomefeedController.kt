@@ -61,10 +61,10 @@ class BngrHomefeedController(private val homefeedService: BngrHomefeedService) {
                         summary = "Without Authorization header — 4 public modules, greeting names are null",
                         value = """{
                           "modules": [
-                            { "type": "greeting", "id": "greeting", "firstName": null, "lastName": null },
-                            { "type": "sale_banner", "id": "sale-banner", "headline": "Mid-Season Sale – bis zu 30%", "ctaLabel": "Jetzt shoppen", "imageUrl": "https://placehold.co/1200x400" },
-                            { "type": "product_teaser", "id": "product-teaser", "headline": "Neu bei Breuninger", "products": [ { "id": "11111111-0000-0000-0000-000000000001", "name": "Cashmere Crewneck Sweater", "brand": "Breuninger Collection", "priceCents": 19900, "imageUrl": "https://placehold.co/600x800" } ] },
-                            { "type": "recommendations", "id": "recommendations", "headline": "Für dich empfohlen", "products": [ { "id": "11111111-0000-0000-0000-000000000005", "name": "Silk Twill Scarf", "brand": "Gucci", "priceCents": 21900, "imageUrl": "https://placehold.co/600x800" } ] }
+                            { "type": "greeting", "firstName": null, "lastName": null },
+                            { "type": "sale_banner", "headline": "Mid-Season Sale – bis zu 30%", "ctaLabel": "Jetzt shoppen", "imageUrl": "https://placehold.co/1200x400" },
+                            { "type": "product_teaser", "headline": "Neu bei Breuninger", "products": [ { "id": "11111111-0000-0000-0000-000000000001", "name": "Cashmere Crewneck Sweater", "brand": "Breuninger Collection", "priceCents": 19900, "imageUrl": "https://placehold.co/600x800" } ] },
+                            { "type": "recommendations", "headline": "Für dich empfohlen", "products": [ { "id": "11111111-0000-0000-0000-000000000005", "name": "Silk Twill Scarf", "brand": "Gucci", "priceCents": 21900, "imageUrl": "https://placehold.co/600x800" } ] }
                           ],
                           "meta": { "generatedAt": "2026-07-03T12:00:00Z", "assemblyTimeMs": 163, "moduleCount": 4 }
                         }""",
@@ -74,11 +74,11 @@ class BngrHomefeedController(private val homefeedService: BngrHomefeedService) {
                         summary = "With a valid Bearer token — personalized greeting plus order_history",
                         value = """{
                           "modules": [
-                            { "type": "greeting", "id": "greeting", "firstName": "Felix", "lastName": "Junghans" },
-                            { "type": "sale_banner", "id": "sale-banner", "headline": "Mid-Season Sale – bis zu 30%", "ctaLabel": "Jetzt shoppen", "imageUrl": "https://placehold.co/1200x400" },
-                            { "type": "product_teaser", "id": "product-teaser", "headline": "Neu bei Breuninger", "products": [ { "id": "11111111-0000-0000-0000-000000000001", "name": "Cashmere Crewneck Sweater", "brand": "Breuninger Collection", "priceCents": 19900, "imageUrl": "https://placehold.co/600x800" } ] },
-                            { "type": "recommendations", "id": "recommendations", "headline": "Für dich empfohlen", "products": [ { "id": "11111111-0000-0000-0000-000000000005", "name": "Silk Twill Scarf", "brand": "Gucci", "priceCents": 21900, "imageUrl": "https://placehold.co/600x800" } ] },
-                            { "type": "order_history", "id": "order-history", "purchases": [ { "productName": "Leather Chelsea Boots", "priceCents": 34900, "purchasedAt": "2026-06-26T09:30:00Z" } ] }
+                            { "type": "greeting", "firstName": "Felix", "lastName": "Junghans" },
+                            { "type": "sale_banner", "headline": "Mid-Season Sale – bis zu 30%", "ctaLabel": "Jetzt shoppen", "imageUrl": "https://placehold.co/1200x400" },
+                            { "type": "product_teaser", "headline": "Neu bei Breuninger", "products": [ { "id": "11111111-0000-0000-0000-000000000001", "name": "Cashmere Crewneck Sweater", "brand": "Breuninger Collection", "priceCents": 19900, "imageUrl": "https://placehold.co/600x800" } ] },
+                            { "type": "recommendations", "headline": "Für dich empfohlen", "products": [ { "id": "11111111-0000-0000-0000-000000000005", "name": "Silk Twill Scarf", "brand": "Gucci", "priceCents": 21900, "imageUrl": "https://placehold.co/600x800" } ] },
+                            { "type": "order_history", "purchases": [ { "productName": "Leather Chelsea Boots", "priceCents": 34900, "purchasedAt": "2026-06-26T09:30:00Z" } ] }
                           ],
                           "meta": { "generatedAt": "2026-07-03T12:00:00Z", "assemblyTimeMs": 171, "moduleCount": 5 }
                         }""",

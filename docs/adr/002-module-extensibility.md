@@ -27,7 +27,7 @@ automatic at context startup.
 ## Decision
 
 ```kotlin
-sealed interface BngrFeedModule { val id: BngrModuleId }
+sealed interface BngrFeedModule
 
 interface BngrModuleProvider {
     val order: Int

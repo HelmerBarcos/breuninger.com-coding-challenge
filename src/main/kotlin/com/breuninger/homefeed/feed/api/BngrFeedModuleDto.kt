@@ -30,10 +30,7 @@ object BngrModuleTypes {
         "module to render; unknown types must be skipped by clients so the feed can grow " +
         "without breaking older app versions.",
 )
-sealed interface BngrFeedModuleDto {
-    @get:Schema(description = "Stable identifier of the module instance, e.g. for impression tracking.")
-    val id: String
-}
+sealed interface BngrFeedModuleDto
 
 /**
  * Identity data only, deliberately no composed salutation ("Guten Morgen, ..."):
@@ -48,7 +45,6 @@ sealed interface BngrFeedModuleDto {
         "generic greeting then.",
 )
 data class BngrGreetingModuleDto(
-    override val id: String,
     @get:Schema(description = "First name of the authenticated user, or null when anonymous.", example = "Anna")
     val firstName: String?,
     @get:Schema(description = "Last name of the authenticated user, or null when anonymous.", example = "Muster")
@@ -57,7 +53,6 @@ data class BngrGreetingModuleDto(
 
 @Schema(description = "Marketing banner for the currently active sale campaign. Absent from the feed when no campaign is active.")
 data class BngrSaleBannerModuleDto(
-    override val id: String,
     @get:Schema(example = "Mid-Season Sale – bis zu 30%")
     val headline: String,
     @get:Schema(description = "Label for the call-to-action button.", example = "Jetzt shoppen")
@@ -68,7 +63,6 @@ data class BngrSaleBannerModuleDto(
 
 @Schema(description = "Small grid of curated products (e.g. new arrivals).")
 data class BngrProductTeaserModuleDto(
-    override val id: String,
     @get:Schema(example = "Neu bei Breuninger")
     val headline: String,
     val products: List<BngrProductDto>,
@@ -76,7 +70,6 @@ data class BngrProductTeaserModuleDto(
 
 @Schema(description = "Personalized product picks. Currently a mocked selection; the contract will not change when a real recommendation backend is plugged in.")
 data class BngrRecommendationsModuleDto(
-    override val id: String,
     @get:Schema(example = "Für dich empfohlen")
     val headline: String,
     val products: List<BngrProductDto>,
@@ -84,7 +77,6 @@ data class BngrRecommendationsModuleDto(
 
 @Schema(description = "The authenticated user's most recent purchases, newest first. Only present when the request carries a valid Bearer token.")
 data class BngrOrderHistoryModuleDto(
-    override val id: String,
     val purchases: List<BngrPurchaseDto>,
 ) : BngrFeedModuleDto
 

@@ -55,7 +55,7 @@ class BngrFeedModuleSerializationTest(@Autowired private val objectMapper: Objec
             objectMapper.writeValueAsString(BngrGreetingModule("Helmer", "Barcos").toDto()),
         )
 
-        assertEquals(setOf("type", "id", "firstName", "lastName"), json.fieldNames().asSequence().toSet())
+        assertEquals(setOf("type", "firstName", "lastName"), json.fieldNames().asSequence().toSet())
         assertEquals("Helmer", json.get("firstName").asText())
         assertEquals("Barcos", json.get("lastName").asText())
     }
