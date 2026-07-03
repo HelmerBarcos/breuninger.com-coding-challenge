@@ -1,5 +1,9 @@
-# breuninger.com-coding-challenge
-Coding Challenge: Senior Backend / Infrastructure Engineer (m/w/d) für das INSPO Team // Remote möglich
+# Breuninger Homefeed Service
+
+Backend service that composes the homefeed of a mobile shopping app: a REST
+endpoint delivering an ordered list of typed modules (greeting, sale banner,
+product teaser, order history) that the app renders in sequence. Spring Boot +
+Kotlin. Architecture decisions are documented in [docs/adr](docs/adr/README.md).
 
 > **Note:** the development setup has only been tested on **macOS**. Windows users
 > should follow the [WSL2 path](docs/setup/README.md#windows-via-wsl2) in the setup
