@@ -7,14 +7,17 @@ import com.breuninger.homefeed.feed.domain.BngrFeedUser
 import com.breuninger.homefeed.feed.domain.BngrHomefeedService
 import com.breuninger.homefeed.shared.BngrProblemResponse
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.http.HttpHeaders
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 
@@ -98,8 +101,17 @@ class BngrHomefeedController(private val homefeedService: BngrHomefeedService) {
         content = [Content(mediaType = "application/problem+json", schema = Schema(implementation = BngrProblemResponse::class))],
     )
     @GetMapping(BngrApiPaths.HOMEFEED)
-    suspend fun homefeed(authentication: Authentication?): BngrHomefeedResponse {
-        val feed = homefeedService.assembleFeed(authentication.toFeedContext())
+    suspend fun homefeed(
+        authentication: Authentication?,
+        @Parameter(description = "Content language: `de` (default) or `en`. Only module content is localized - error messages stay English (ADR-010/011).")
+        @RequestHeader(name = HttpHeaders.ACCEPT_LANGUAGE, required = false)
+        acceptLanguage: String?,
+    ): BngrHomefeedResponse {
+        val context = BngrFeedContext(
+            user = authentication.toFeedUser(),
+            locale = resolveContentLocale(acceptLanguage),
+        )
+        val feed = homefeedService.assembleFeed(context)
         return BngrHomefeedResponse(
             modules = feed.modules.map { it.toDto() },
             meta = BngrHomefeedMeta(
@@ -111,13 +123,11 @@ class BngrHomefeedController(private val homefeedService: BngrHomefeedService) {
     }
 }
 
-private fun Authentication?.toFeedContext(): BngrFeedContext {
-    val jwt = (this as? JwtAuthenticationToken)?.token ?: return BngrFeedContext.ANONYMOUS
-    return BngrFeedContext(
-        BngrFeedUser(
-            email = jwt.subject,
-            firstName = jwt.getClaimAsString(BngrJwtClaims.FIRST_NAME).orEmpty(),
-            lastName = jwt.getClaimAsString(BngrJwtClaims.LAST_NAME).orEmpty(),
-        ),
+private fun Authentication?.toFeedUser(): BngrFeedUser? {
+    val jwt = (this as? JwtAuthenticationToken)?.token ?: return null
+    return BngrFeedUser(
+        email = jwt.subject,
+        firstName = jwt.getClaimAsString(BngrJwtClaims.FIRST_NAME).orEmpty(),
+        lastName = jwt.getClaimAsString(BngrJwtClaims.LAST_NAME).orEmpty(),
     )
 }

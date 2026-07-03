@@ -9,8 +9,10 @@ import io.swagger.v3.oas.models.security.Scopes
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
 import org.springdoc.core.customizers.OpenApiCustomizer
+import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.support.ResourceBundleMessageSource
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
@@ -28,6 +30,18 @@ class BngrWebConfig(
     /** Strictness is scoped to our API - actuator and docs keep their own conventions. */
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(unknownParameterInterceptor).addPathPatterns("${BngrApiPaths.API_V1}/**")
+    }
+
+    /**
+     * Translations for module CONTENT only (ADR-011): the base bundle is German
+     * (the shop's default locale), never the server JVM locale. System and
+     * error messages are a separate concern and stay English (ADR-010).
+     */
+    @Bean
+    fun bngrContentMessageSource(): MessageSource = ResourceBundleMessageSource().apply {
+        setBasename("i18n/feed-content")
+        setDefaultEncoding("UTF-8")
+        setFallbackToSystemLocale(false)
     }
 
     @Bean

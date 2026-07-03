@@ -10,6 +10,8 @@ import com.breuninger.homefeed.feed.domain.BngrProductTeaserModule
 import com.breuninger.homefeed.feed.domain.BngrRecommendationsModule
 import com.breuninger.homefeed.feed.domain.BngrSaleBannerModule
 import com.breuninger.homefeed.shared.BngrBackendSimulator
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.context.MessageSource
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 
@@ -36,6 +38,7 @@ class BngrSaleBannerModuleProvider(
 class BngrProductTeaserModuleProvider(
     private val products: BngrProductRepository,
     private val simulator: BngrBackendSimulator,
+    @Qualifier("bngrContentMessageSource") private val contentMessages: MessageSource,
 ) : BngrModuleProvider {
 
     override val order = BngrFeedSlots.PRODUCT_TEASER
@@ -43,7 +46,10 @@ class BngrProductTeaserModuleProvider(
     override suspend fun provide(context: BngrFeedContext): BngrFeedModule? {
         val teaser = simulator.simulateRemoteCall { products.findByOrderByNameAsc(PageRequest.of(0, TEASER_SIZE)) }
         if (teaser.isEmpty()) return null
-        return BngrProductTeaserModule(headline = "Neu bei Breuninger", products = teaser.map { it.toFeedProduct() })
+        return BngrProductTeaserModule(
+            headline = contentMessages.getMessage("feed.product-teaser.headline", null, context.locale),
+            products = teaser.map { it.toFeedProduct() },
+        )
     }
 
     companion object {
@@ -59,6 +65,7 @@ class BngrProductTeaserModuleProvider(
 class BngrRecommendationsModuleProvider(
     private val products: BngrProductRepository,
     private val simulator: BngrBackendSimulator,
+    @Qualifier("bngrContentMessageSource") private val contentMessages: MessageSource,
 ) : BngrModuleProvider {
 
     override val order = BngrFeedSlots.RECOMMENDATIONS
@@ -66,7 +73,10 @@ class BngrRecommendationsModuleProvider(
     override suspend fun provide(context: BngrFeedContext): BngrFeedModule? {
         val picks = simulator.simulateRemoteCall { products.findByOrderByNameAsc(PageRequest.of(1, PICKS_SIZE)) }
         if (picks.isEmpty()) return null
-        return BngrRecommendationsModule(headline = "Für dich empfohlen", products = picks.map { it.toFeedProduct() })
+        return BngrRecommendationsModule(
+            headline = contentMessages.getMessage("feed.recommendations.headline", null, context.locale),
+            products = picks.map { it.toFeedProduct() },
+        )
     }
 
     companion object {

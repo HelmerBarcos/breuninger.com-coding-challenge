@@ -71,6 +71,33 @@ class BngrHomefeedApiIT(@Autowired private val rest: TestRestTemplate) {
     }
 
     @Test
+    fun `module content follows accept-language with german as the default`() {
+        fun headlineOf(body: JsonNode, type: String) =
+            body.get("modules").first { it.get("type").asText() == type }.get("headline").asText()
+
+        fun feedWithLanguage(language: String?): JsonNode {
+            val headers = org.springframework.http.HttpHeaders()
+            language?.let { headers.set(org.springframework.http.HttpHeaders.ACCEPT_LANGUAGE, it) }
+            return rest.exchange(
+                "/api/v1/homefeed",
+                org.springframework.http.HttpMethod.GET,
+                org.springframework.http.HttpEntity<Void>(headers),
+                JsonNode::class.java,
+            ).body!!
+        }
+
+        // no header -> German, the shop's default (ADR-011)
+        assertEquals("Neu bei Breuninger", headlineOf(feedWithLanguage(null), "product_teaser"))
+
+        val english = feedWithLanguage("en-US,en;q=0.9")
+        assertEquals("New at Breuninger", headlineOf(english, "product_teaser"))
+        assertEquals("Recommended for you", headlineOf(english, "recommendations"))
+
+        // unsupported language degrades to German instead of failing
+        assertEquals("Für dich empfohlen", headlineOf(feedWithLanguage("fr-FR"), "recommendations"))
+    }
+
+    @Test
     fun `liveness and readiness probes answer`() {
         assertEquals(HttpStatus.OK, rest.getForEntity("/actuator/health/liveness", String::class.java).statusCode)
         assertEquals(HttpStatus.OK, rest.getForEntity("/actuator/health/readiness", String::class.java).statusCode)
