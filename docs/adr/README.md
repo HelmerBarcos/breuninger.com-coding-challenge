@@ -15,3 +15,4 @@ context, honest comparison of options, decision, consequences, enforcement).
 | [008](008-greeting-client-composition.md) | Greeting module: the API sends identity data, not the composed salutation | Accepted |
 | [009](009-database-migrations.md) | Database migrations and seed data with Flyway (SQL-first) | Accepted |
 | [010](010-error-contract.md) | Error contract: RFC 9457 extended with typed error codes, strict request validation | Accepted |
+| [011](011-content-localization.md) | Content localization: Accept-Language with German default; system messages stay English | Accepted |
