@@ -1,6 +1,11 @@
 spring:
   application:
     name: homefeed
+  web:
+    # API messages (e.g. validation) are always English, regardless of the
+    # client's Accept-Language or the server JVM locale (ADR-010)
+    locale: en
+    locale-resolver: fixed
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/homefeed}
     username: ${SPRING_DATASOURCE_USERNAME:homefeed}

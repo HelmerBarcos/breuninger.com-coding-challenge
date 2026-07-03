@@ -117,6 +117,21 @@ class BngrErrorContractIT(@Autowired private val rest: TestRestTemplate) {
     }
 
     @Test
+    fun `messages stay english even when the client asks for another language`() {
+        val headers = HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
+            set(HttpHeaders.ACCEPT_LANGUAGE, "de-DE")
+        }
+        val body = """{"email":"not-an-email","password":"long-enough-1","firstName":"A","lastName":"B","gender":"FEMALE"}"""
+
+        val response = rest.postForEntity("/api/v1/auth/register", HttpEntity(body, headers), JsonNode::class.java)
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
+        val message = response.body!!.get("errors").first().get("message").asText()
+        assertEquals("must be a well-formed email address", message)
+    }
+
+    @Test
     fun `error responses use the problem+json media type`() {
         val response = rest.getForEntity("/api/v1/does-not-exist", String::class.java)
 
