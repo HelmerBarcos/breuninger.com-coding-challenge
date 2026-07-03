@@ -33,7 +33,7 @@ challenge for a Senior Backend/Infrastructure role. Decisions are recorded in
 
 - `feed/` is the only hexagon. `feed/domain` must NOT import Spring, Jackson, or JPA.
 - `catalog/`, `orders/`, `auth/` plug into the feed by implementing `BngrModuleProvider`.
-  They depend on `feed/domain`, never on each other. Sole allowed exception: `auth → orders`.
+  They depend on `feed/domain`, never on each other. Sole allowed exception: `auth -> orders`.
 - Domain packages use Spring Data repositories directly — no ports there.
 - ArchUnit tests enforce these rules. If a rule blocks you, stop and ask — never relax the test.
 

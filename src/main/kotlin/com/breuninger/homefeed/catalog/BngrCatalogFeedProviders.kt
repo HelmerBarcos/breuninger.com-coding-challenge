@@ -13,7 +13,7 @@ import com.breuninger.homefeed.shared.BngrBackendSimulator
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
 
-/** No active campaign → no banner: the provider returns null instead of an empty module. */
+/** No active campaign -> no banner: the provider returns null instead of an empty module. */
 @Component
 class BngrSaleBannerModuleProvider(
     private val campaigns: BngrSaleCampaignRepository,

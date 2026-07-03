@@ -49,17 +49,17 @@ Every error response is a ProblemDetail extended with `errors[]`, each entry a
 
 **Strict request validation**, all answering in this shape:
 
-- Unknown JSON body fields → 400 `UNKNOWN_FIELD` (Jackson
+- Unknown JSON body fields -> 400 `UNKNOWN_FIELD` (Jackson
   `fail-on-unknown-properties: true`).
-- Unknown query parameters → 400 `UNKNOWN_PARAMETER`, one error per offending
+- Unknown query parameters -> 400 `UNKNOWN_PARAMETER`, one error per offending
   parameter (`BngrUnknownParameterInterceptor` compares the request against the
   handler's declared `@RequestParam`s; scoped to `/api/**`).
-- Unknown paths → 404 `NOT_FOUND` with the JSON body. The security chain lets
+- Unknown paths -> 404 `NOT_FOUND` with the JSON body. The security chain lets
   unmatched paths fall through to MVC (`anyRequest().permitAll()` after gating
   `/actuator/**`) so clients get an honest 404 instead of a misleading 401.
-- Wrong method → 405, wrong content type → 415, unparseable JSON → 400
-  `MALFORMED_BODY`, invalid enum value → 400 `FIELD_INVALID` pointing at the field.
-- Anything unhandled → 500 `INTERNAL_ERROR` with no internals leaked.
+- Wrong method -> 405, wrong content type -> 415, unparseable JSON -> 400
+  `MALFORMED_BODY`, invalid enum value -> 400 `FIELD_INVALID` pointing at the field.
+- Anything unhandled -> 500 `INTERNAL_ERROR` with no internals leaked.
 
 ## Consequences
 

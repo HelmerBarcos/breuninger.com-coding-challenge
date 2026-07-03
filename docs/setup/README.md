@@ -74,14 +74,14 @@ java -version     # must print: openjdk version "21.0.7" ... Temurin
 brew install --cask visual-studio-code
 ```
 
-Enable the `code` CLI if missing: in VS Code press `Cmd+Shift+P` →
+Enable the `code` CLI if missing: in VS Code press `Cmd+Shift+P` ->
 "Shell Command: Install 'code' command in PATH".
 
 ### Recommended extensions
 
 Opening the repo in VS Code prompts to install the recommendations from
 [`.vscode/extensions.json`](../../.vscode/extensions.json) (accept the
-notification, or Extensions view → filter `@recommended`). Manually:
+notification, or Extensions view -> filter `@recommended`). Manually:
 
 ```bash
 code --install-extension vscjava.vscode-java-pack
@@ -127,7 +127,7 @@ rather than natively:
 
 1. **WSL2 + Ubuntu**: `wsl --install -d Ubuntu` in an elevated PowerShell, then reboot.
 2. **Docker Desktop for Windows** with the WSL2 backend enabled
-   (Settings → Resources → WSL integration → enable for Ubuntu). `docker` is then
+   (Settings -> Resources -> WSL integration -> enable for Ubuntu). `docker` is then
    available inside WSL.
 3. **Inside WSL**, follow sections 2–3 above verbatim (SDKMAN + JDK 21) — they are
    Linux commands and work unchanged. Clone the repo inside the WSL filesystem

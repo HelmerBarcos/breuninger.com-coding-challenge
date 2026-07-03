@@ -18,7 +18,7 @@ data class BngrRegistration(
 )
 
 /**
- * Registration seeds mock purchases in the same transaction (auth → orders is
+ * Registration seeds mock purchases in the same transaction (auth -> orders is
  * the single allowed inter-domain dependency, ADR-001): every user has an
  * order history from day one, so the protected feed module is demonstrable
  * without purchase endpoints.

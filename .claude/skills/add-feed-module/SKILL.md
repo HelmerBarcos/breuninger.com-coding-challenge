@@ -15,7 +15,7 @@ If a step seems to require that, stop and re-read ADR-002 — something is wrong
    `com.breuninger.homefeed` (new domain = also check the ArchUnit dependency rules)
 3. Payload fields (names + types)
 4. Feed position (`order` value — look at existing providers to pick a slot)
-5. Protected? (only rendered for authenticated users → provider returns `null`
+5. Protected? (only rendered for authenticated users -> provider returns `null`
    when `ctx.user == null`)
 
 ## Steps

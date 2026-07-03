@@ -35,7 +35,7 @@ Option C. `feed/domain` is the only framework-free core (no Spring, Jackson, or
 JPA imports) and contains the sealed `BngrFeedModule`, the `BngrModuleProvider`
 port and `BngrHomefeedService`. Other domains plug in by implementing
 `BngrModuleProvider`; they depend on `feed/domain`, never on each other (sole
-declared exception: `auth → orders`, to mock purchases at registration). Domain
+declared exception: `auth -> orders`, to mock purchases at registration). Domain
 packages use Spring Data repositories directly — no ports where there is no
 logic to protect.
 
@@ -51,5 +51,5 @@ logic to protect.
 ## Enforcement
 
 ArchUnit tests: (1) no class in `feed.domain` imports Spring/Jackson/JPA;
-(2) `catalog`/`orders`/`auth` do not depend on each other except `auth → orders`;
+(2) `catalog`/`orders`/`auth` do not depend on each other except `auth -> orders`;
 (3) only `feed` may be depended on by other domains.

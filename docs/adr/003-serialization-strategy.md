@@ -31,7 +31,7 @@ buys a stable contract plus full ecosystem compatibility.
 
 Jackson with `jackson-module-kotlin`. A sealed `BngrFeedModuleDto` hierarchy
 annotated with `@JsonTypeInfo(use = NAME, property = "type")`; discriminator
-values are snake_case constants centralized in `BngrModuleTypes`. Domain →
+values are snake_case constants centralized in `BngrModuleTypes`. Domain ->
 DTO mapping via explicit `toDto()` extension functions (exhaustive `when`).
 The endpoint returns an envelope object — `{ "modules": [...], "meta": {...} }`
 — never a bare array, so metadata can be added without breaking clients.
