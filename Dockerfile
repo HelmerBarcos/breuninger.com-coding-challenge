@@ -10,8 +10,11 @@ RUN --mount=type=cache,target=/root/.m2 mvn -B -q dependency:go-offline
 FROM deps AS dev
 COPY src ./src
 EXPOSE 8080 5005
+# Not offline on purpose: compose mounts the maven-repo volume over /root/.m2
+# (the deps stage cache mount does not survive into the image), so the first
+# start downloads once into the volume and later starts reuse it.
 # devtools restarts the context when recompiled classes land in the mounted target/
-CMD ["mvn", "-o", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"]
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"]
 
 # ---- build the layered jar -------------------------------------------------
 FROM deps AS build
