@@ -3,6 +3,7 @@ package com.breuninger.homefeed.feed.api
 import com.breuninger.homefeed.feed.domain.BngrFeedContext
 import com.breuninger.homefeed.feed.domain.BngrFeedUser
 import com.breuninger.homefeed.feed.domain.BngrHomefeedService
+import com.breuninger.homefeed.shared.BngrProblemResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.ExampleObject
@@ -83,6 +84,16 @@ class BngrHomefeedController(private val homefeedService: BngrHomefeedService) {
                 ],
             ),
         ],
+    )
+    @ApiResponse(
+        responseCode = "400",
+        description = "Unknown query parameters — this endpoint declares none, anything sent is rejected (code UNKNOWN_PARAMETER, one error per parameter).",
+        content = [Content(mediaType = "application/problem+json", schema = Schema(implementation = BngrProblemResponse::class))],
+    )
+    @ApiResponse(
+        responseCode = "401",
+        description = "An Authorization header was sent but the token is invalid or expired. Omit the header entirely for the anonymous feed.",
+        content = [Content(mediaType = "application/problem+json", schema = Schema(implementation = BngrProblemResponse::class))],
     )
     @GetMapping("/api/v1/homefeed")
     suspend fun homefeed(authentication: Authentication?): BngrHomefeedResponse {

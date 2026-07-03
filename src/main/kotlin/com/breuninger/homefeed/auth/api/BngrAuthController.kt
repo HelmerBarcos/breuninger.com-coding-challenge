@@ -5,9 +5,13 @@ import com.breuninger.homefeed.auth.BngrRegisterUserService
 import com.breuninger.homefeed.auth.BngrRegistration
 import com.breuninger.homefeed.auth.BngrTokenService
 import com.breuninger.homefeed.auth.BngrUserEntity
+import com.breuninger.homefeed.shared.BngrProblemResponse
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
@@ -77,12 +81,45 @@ class BngrAuthController(
 ) {
 
     @Operation(summary = "Register a new user (mock purchases are seeded automatically)")
+    @ApiResponse(
+        responseCode = "400",
+        description = "Validation failed (codes FIELD_INVALID, one per offending field), unknown body field (UNKNOWN_FIELD) or unparseable JSON (MALFORMED_BODY).",
+        content = [
+            Content(
+                mediaType = "application/problem+json",
+                schema = Schema(implementation = BngrProblemResponse::class),
+                examples = [
+                    ExampleObject(
+                        name = "two invalid fields at once",
+                        value = """{
+                          "status": 400,
+                          "detail": "Request validation failed",
+                          "errors": [
+                            { "code": "FIELD_INVALID", "message": "must be a well-formed email address", "field": "email" },
+                            { "code": "FIELD_INVALID", "message": "size must be between 8 and 100", "field": "password" }
+                          ]
+                        }""",
+                    ),
+                ],
+            ),
+        ],
+    )
+    @ApiResponse(
+        responseCode = "409",
+        description = "Email already registered (code EMAIL_TAKEN).",
+        content = [Content(mediaType = "application/problem+json", schema = Schema(implementation = BngrProblemResponse::class))],
+    )
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     fun register(@RequestBody @Valid request: BngrRegisterRequest): BngrUserDto =
         registerUserService.register(request.toRegistration()).toDto()
 
     @Operation(summary = "Exchange credentials for a Bearer token")
+    @ApiResponse(
+        responseCode = "401",
+        description = "Wrong email or password (code INVALID_CREDENTIALS — deliberately does not say which).",
+        content = [Content(mediaType = "application/problem+json", schema = Schema(implementation = BngrProblemResponse::class))],
+    )
     @PostMapping("/login")
     fun login(@RequestBody @Valid request: BngrLoginRequest): BngrTokenResponse {
         val issued = tokenService.login(request.email, request.password)
