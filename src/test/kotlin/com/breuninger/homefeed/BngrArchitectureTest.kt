@@ -8,7 +8,7 @@ import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
 
 /**
  * The executable architecture rules from ADR-001 (dependency direction) and
- * ADR-007 (naming). If one of these blocks you, the design is being violated —
+ * ADR-007 (naming). If one of these blocks you, the design is being violated -
  * fix the code, never relax the rule.
  */
 @AnalyzeClasses(packages = ["com.breuninger.homefeed"], importOptions = [DoNotIncludeTests::class])

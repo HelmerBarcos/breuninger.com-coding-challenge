@@ -18,7 +18,7 @@ classes, never modifying the feed assembly.
 | Conditional modules (user-dependent) | `if`s accumulate in the service | Per-entry logic | Provider returns `null`; the service stays generic |
 | Discoverability | High (one file) | Medium | Medium: convention must be documented |
 
-**A** keeps everything visible but the service grows with every module — the
+**A** keeps everything visible but the service grows with every module - the
 exact thing the requirement forbids. **B** decouples creation but replaces
 compiler guarantees with runtime wiring. **C** uses a sealed domain type plus a
 provider port; Spring injects `List<BngrModuleProvider>`, so registration is
@@ -41,7 +41,7 @@ concurrently (ADR-004), filters nulls and sorts by `order`. Conditional logic
 `BngrFeedContext`, keeping the service free of special cases. A new module =
 domain model + provider + DTO; the only existing files touched are the
 `BngrModuleTypes` constants, the `@JsonSubTypes` list and the `toDto()` mapper
-(ADR-003) — all of which fail compilation or a test when forgotten.
+(ADR-003) - all of which fail compilation or a test when forgotten.
 
 ## Consequences
 

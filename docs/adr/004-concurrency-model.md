@@ -16,8 +16,8 @@ concurrency behavior observable and testable.
 | Criterion | A) Sequential resolution | B) `CompletableFuture` / virtual threads | C) WebFlux + reactive stack | D) Kotlin coroutines on Spring MVC (chosen) |
 |---|---|---|---|---|
 | Feed latency | Sum of providers | Max of providers | Max of providers | Max of providers |
-| Fit with Kotlin | — | Java-idiomatic | Reactor types leak everywhere | Idiomatic (`suspend`, structured concurrency) |
-| Fit with JPA (blocking) | Trivial | Good | Poor — needs R2DBC migration | Good (`Dispatchers.IO`) |
+| Fit with Kotlin | - | Java-idiomatic | Reactor types leak everywhere | Idiomatic (`suspend`, structured concurrency) |
+| Fit with JPA (blocking) | Trivial | Good | Poor - needs R2DBC migration | Good (`Dispatchers.IO`) |
 | Complexity budget | None | Medium | High for this scope | Medium |
 | Cancellation/error semantics | Trivial | Manual | Built-in | Structured concurrency built-in |
 
@@ -31,7 +31,7 @@ gives structured concurrency for free.
 
 `BngrHomefeedService.assembleFeed` runs `coroutineScope { providers.map { async
 { it.provide(ctx) } }.awaitAll() }`. Each provider call is wrapped in
-`runCatching`: a failing provider is logged and its module omitted — **the feed
+`runCatching`: a failing provider is logged and its module omitted - **the feed
 degrades, it never 500s** because one banner backend is down. Simulated latency
 is a typed configuration property (`homefeed.simulation.latency`), set to zero
 in tests. The response envelope exposes `meta.assemblyTimeMs`, making the
@@ -40,7 +40,7 @@ fan-out empirically visible (total ≈ max, not sum).
 ## Consequences
 
 - Fan-out and degradation are observable in the API response itself.
-- Unit tests use `kotlinx-coroutines-test` (`runTest`) with virtual time — no
+- Unit tests use `kotlinx-coroutines-test` (`runTest`) with virtual time - no
   real sleeping in the test suite.
 - If persistence ever becomes reactive, providers keep their signatures
   (`suspend`) and only the repository adapters change.

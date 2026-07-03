@@ -7,7 +7,7 @@ description: Create a new Architecture Decision Record in docs/adr/ using the ho
 
 House style: an ADR that honestly compares alternatives is worth more than one
 that only justifies the winner. Where possible, decisions become *executable*
-(an ArchUnit rule, a test, a lint check) — say how at the end of the ADR.
+(an ArchUnit rule, a test, a lint check) - say how at the end of the ADR.
 
 ## Steps
 

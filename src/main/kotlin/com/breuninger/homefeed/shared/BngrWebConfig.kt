@@ -25,7 +25,7 @@ class BngrWebConfig(
         registry.addRedirectViewController(BngrApiPaths.SCALAR, BngrApiPaths.SCALAR_HTML)
     }
 
-    /** Strictness is scoped to our API — actuator and docs keep their own conventions. */
+    /** Strictness is scoped to our API - actuator and docs keep their own conventions. */
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(unknownParameterInterceptor).addPathPatterns("${BngrApiPaths.API_V1}/**")
     }
@@ -66,7 +66,7 @@ class BngrWebConfig(
 
     /**
      * OpenAPI expresses "authentication is optional" as a security list that
-     * contains an EMPTY requirement alongside the real ones — not expressible
+     * contains an EMPTY requirement alongside the real ones - not expressible
      * with the @Operation annotation alone. Without this, interactive clients
      * (Scalar) always attach an Authorization header, and a present-but-empty
      * Bearer token is correctly rejected with 401.

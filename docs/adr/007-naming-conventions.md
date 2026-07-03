@@ -22,9 +22,9 @@ ambiguity. A business prefix on our own types addresses both.
 
 The honest counter-argument for **A**: stack traces already contain the FQCN
 (`com.breuninger.homefeed...`), so package names identify ownership. We accept
-the prefix cost anyway because the *simple* name travels alone in many places —
+the prefix cost anyway because the *simple* name travels alone in many places -
 log patterns, IDE tabs and breadcrumbs, heap-dump histograms, conversation
-("look at BngrHomefeedService") — where the package is absent or truncated.
+("look at BngrHomefeedService") - where the package is absent or truncated.
 **B** delivers the same benefits but inflates every compound name past
 readability.
 

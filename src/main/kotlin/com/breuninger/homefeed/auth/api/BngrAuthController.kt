@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.validation.annotation.Validated
 
-@Schema(description = "New account data. Registering automatically seeds 3-5 mock purchases for the user — there are no purchase endpoints.")
+@Schema(description = "New account data. Registering automatically seeds 3-5 mock purchases for the user - there are no purchase endpoints.")
 data class BngrRegisterRequest(
     @field:Email @field:NotBlank
     @get:Schema(example = "anna.muster@example.com")
@@ -42,7 +42,7 @@ data class BngrRegisterRequest(
     val gender: BngrGender,
 )
 
-@Schema(description = "Public representation of a user account — never contains credentials.")
+@Schema(description = "Public representation of a user account - never contains credentials.")
 data class BngrUserDto(
     val email: String,
     val firstName: String,
@@ -118,7 +118,7 @@ class BngrAuthController(
     @Operation(summary = "Exchange credentials for a Bearer token")
     @ApiResponse(
         responseCode = "401",
-        description = "Wrong email or password (code INVALID_CREDENTIALS — deliberately does not say which).",
+        description = "Wrong email or password (code INVALID_CREDENTIALS - deliberately does not say which).",
         content = [Content(mediaType = "application/problem+json", schema = Schema(implementation = BngrProblemResponse::class))],
     )
     @PostMapping("/login")

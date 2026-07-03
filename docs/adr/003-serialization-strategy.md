@@ -16,12 +16,12 @@ automatic.
 |---|---|---|---|
 | Sealed-class polymorphism | Built-in, discriminator for free | Needs annotations on domain types | `@JsonTypeInfo`/`@JsonSubTypes` on DTOs only |
 | Reflection | None (compile-time serializers) | Runtime | Runtime (mitigated by jackson-module-kotlin) |
-| springdoc/OpenAPI integration | Poor — spec quality collapses | Good | Good: `oneOf` + discriminator generated |
+| springdoc/OpenAPI integration | Poor - spec quality collapses | Good | Good: `oneOf` + discriminator generated |
 | Ecosystem consistency (ProblemDetail, Actuator) | Second serializer in one API | Single serializer | Single serializer |
-| API/domain coupling | — | High: renaming a field breaks the contract | None: DTOs are the contract |
+| API/domain coupling | - | High: renaming a field breaks the contract | None: DTOs are the contract |
 
-**A** is genuinely attractive — sealed interfaces serialize polymorphically
-without annotations — but springdoc inspects Jackson, and Actuator/ProblemDetail
+**A** is genuinely attractive - sealed interfaces serialize polymorphically
+without annotations - but springdoc inspects Jackson, and Actuator/ProblemDetail
 already serialize through Jackson, so choosing A means either two serializers in
 one API or losing generated OpenAPI quality. **B** is the least code but welds
 the wire format to the domain model. **C** costs one explicit mapping layer and
@@ -33,13 +33,13 @@ Jackson with `jackson-module-kotlin`. A sealed `BngrFeedModuleDto` hierarchy
 annotated with `@JsonTypeInfo(use = NAME, property = "type")`; discriminator
 values are snake_case constants centralized in `BngrModuleTypes`. Domain ->
 DTO mapping via explicit `toDto()` extension functions (exhaustive `when`).
-The endpoint returns an envelope object — `{ "modules": [...], "meta": {...} }`
-— never a bare array, so metadata can be added without breaking clients.
+The endpoint returns an envelope object - `{ "modules": [...], "meta": {...} }`
+- never a bare array, so metadata can be added without breaking clients.
 Convention: `type` values snake_case (stable contract), field names camelCase.
 
 ## Consequences
 
-- One mapping function per module type — mechanical, part of the
+- One mapping function per module type - mechanical, part of the
   `add-feed-module` recipe.
 - OpenAPI shows `oneOf` with a discriminator, which is exactly what a mobile
   team consumes.

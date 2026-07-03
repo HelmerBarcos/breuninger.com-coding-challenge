@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 
 /**
  * The protected module: personal data, so it exists only for authenticated
- * callers. The provider decides via the context — the feed service and the
+ * callers. The provider decides via the context - the feed service and the
  * endpoint stay free of special cases (ADR-002, ADR-005).
  */
 @Component

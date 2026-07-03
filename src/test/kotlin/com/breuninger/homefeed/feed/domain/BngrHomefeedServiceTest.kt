@@ -22,7 +22,7 @@ class BngrHomefeedServiceTest {
 
     @Test
     fun `modules come back sorted by provider order, not by completion order`() = runTest {
-        // the first-positioned provider is the slowest — order must still win
+        // the first-positioned provider is the slowest - order must still win
         val service = BngrHomefeedService(
             listOf(
                 provider(order = 30, module = teaser),

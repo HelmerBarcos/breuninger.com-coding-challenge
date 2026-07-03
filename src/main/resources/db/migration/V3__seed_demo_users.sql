@@ -1,5 +1,5 @@
 -- Demo users. Shared demo password: 'breuninger-demo' (BCrypt below).
--- Explicitly non-production data — see README. Every user owns mock purchases
+-- Explicitly non-production data - see README. Every user owns mock purchases
 -- (same invariant the registration use case maintains).
 
 INSERT INTO users (id, email, first_name, last_name, gender, password_hash) VALUES

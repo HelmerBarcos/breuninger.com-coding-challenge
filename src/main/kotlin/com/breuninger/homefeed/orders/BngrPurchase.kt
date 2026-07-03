@@ -9,7 +9,7 @@ import java.util.UUID
 
 /**
  * Purchases snapshot the product name and price at purchase time (as order
- * lines do in reality) — no foreign key into the catalog, which also keeps
+ * lines do in reality) - no foreign key into the catalog, which also keeps
  * the orders domain independent of catalog.
  */
 @Entity

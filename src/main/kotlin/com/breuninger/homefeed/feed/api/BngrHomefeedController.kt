@@ -30,8 +30,8 @@ data class BngrHomefeedResponse(
 data class BngrHomefeedMeta(
     @get:Schema(description = "Server time at which the feed was assembled.")
     val generatedAt: Instant,
-    /** Wall-clock time of the concurrent provider fan-out — max of providers, not sum (ADR-004). */
-    @get:Schema(description = "Wall-clock milliseconds of the concurrent module fan-out — roughly the slowest provider, not the sum.", example = "163")
+    /** Wall-clock time of the concurrent provider fan-out - max of providers, not sum (ADR-004). */
+    @get:Schema(description = "Wall-clock milliseconds of the concurrent module fan-out - roughly the slowest provider, not the sum.", example = "163")
     val assemblyTimeMs: Long,
     @get:Schema(description = "Number of modules in this response.", example = "5")
     val moduleCount: Int,
@@ -46,7 +46,7 @@ class BngrHomefeedController(private val homefeedService: BngrHomefeedService) {
         description = "Authentication is **optional**: call it without any Authorization header for the " +
             "public feed, or authenticate (padlock above) to personalize the greeting and receive the " +
             "protected order_history module. Note: a *present but invalid* Bearer token is rejected " +
-            "with 401 — omit the header entirely for the anonymous feed.",
+            "with 401 - omit the header entirely for the anonymous feed.",
     )
     @ApiResponse(
         responseCode = "200",
@@ -58,11 +58,11 @@ class BngrHomefeedController(private val homefeedService: BngrHomefeedService) {
                 examples = [
                     ExampleObject(
                         name = "anonymous",
-                        summary = "Without Authorization header — 4 public modules, greeting names are null",
+                        summary = "Without Authorization header - 4 public modules, greeting names are null",
                         value = """{
                           "modules": [
                             { "type": "greeting", "firstName": null, "lastName": null },
-                            { "type": "sale_banner", "headline": "Mid-Season Sale – bis zu 30%", "ctaLabel": "Jetzt shoppen", "imageUrl": "https://placehold.co/1200x400" },
+                            { "type": "sale_banner", "headline": "Mid-Season Sale - bis zu 30%", "ctaLabel": "Jetzt shoppen", "imageUrl": "https://placehold.co/1200x400" },
                             { "type": "product_teaser", "headline": "Neu bei Breuninger", "products": [ { "id": "11111111-0000-0000-0000-000000000001", "name": "Cashmere Crewneck Sweater", "brand": "Breuninger Collection", "priceCents": 19900, "imageUrl": "https://placehold.co/600x800" } ] },
                             { "type": "recommendations", "headline": "Für dich empfohlen", "products": [ { "id": "11111111-0000-0000-0000-000000000005", "name": "Silk Twill Scarf", "brand": "Gucci", "priceCents": 21900, "imageUrl": "https://placehold.co/600x800" } ] }
                           ],
@@ -71,11 +71,11 @@ class BngrHomefeedController(private val homefeedService: BngrHomefeedService) {
                     ),
                     ExampleObject(
                         name = "authenticated",
-                        summary = "With a valid Bearer token — personalized greeting plus order_history",
+                        summary = "With a valid Bearer token - personalized greeting plus order_history",
                         value = """{
                           "modules": [
                             { "type": "greeting", "firstName": "Felix", "lastName": "Junghans" },
-                            { "type": "sale_banner", "headline": "Mid-Season Sale – bis zu 30%", "ctaLabel": "Jetzt shoppen", "imageUrl": "https://placehold.co/1200x400" },
+                            { "type": "sale_banner", "headline": "Mid-Season Sale - bis zu 30%", "ctaLabel": "Jetzt shoppen", "imageUrl": "https://placehold.co/1200x400" },
                             { "type": "product_teaser", "headline": "Neu bei Breuninger", "products": [ { "id": "11111111-0000-0000-0000-000000000001", "name": "Cashmere Crewneck Sweater", "brand": "Breuninger Collection", "priceCents": 19900, "imageUrl": "https://placehold.co/600x800" } ] },
                             { "type": "recommendations", "headline": "Für dich empfohlen", "products": [ { "id": "11111111-0000-0000-0000-000000000005", "name": "Silk Twill Scarf", "brand": "Gucci", "priceCents": 21900, "imageUrl": "https://placehold.co/600x800" } ] },
                             { "type": "order_history", "purchases": [ { "productName": "Leather Chelsea Boots", "priceCents": 34900, "purchasedAt": "2026-06-26T09:30:00Z" } ] }
@@ -89,7 +89,7 @@ class BngrHomefeedController(private val homefeedService: BngrHomefeedService) {
     )
     @ApiResponse(
         responseCode = "400",
-        description = "Unknown query parameters — this endpoint declares none, anything sent is rejected (code UNKNOWN_PARAMETER, one error per parameter).",
+        description = "Unknown query parameters - this endpoint declares none, anything sent is rejected (code UNKNOWN_PARAMETER, one error per parameter).",
         content = [Content(mediaType = "application/problem+json", schema = Schema(implementation = BngrProblemResponse::class))],
     )
     @ApiResponse(

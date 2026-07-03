@@ -12,7 +12,7 @@ class BngrUnknownParametersException(val unknownParameters: Set<String>) :
 
 /**
  * Strict query contract (ADR-010): endpoints answer only the parameters they
- * declare via @RequestParam — anything else is a 400, not silently ignored.
+ * declare via @RequestParam - anything else is a 400, not silently ignored.
  * Silently ignored parameters hide client bugs (a misspelled parameter "works"
  * and just does nothing).
  */

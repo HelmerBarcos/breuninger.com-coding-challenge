@@ -5,7 +5,7 @@ import java.time.Instant
 @JvmInline
 value class BngrProductId(val value: String)
 
-/** The feed's own view of a product — providers map their domain entities into this. */
+/** The feed's own view of a product - providers map their domain entities into this. */
 data class BngrFeedProduct(
     val id: BngrProductId,
     val name: String,
@@ -28,7 +28,7 @@ data class BngrFeedPurchase(
 sealed interface BngrFeedModule
 
 /**
- * Carries identity data only — never a composed salutation ("Guten Morgen, ...").
+ * Carries identity data only - never a composed salutation ("Guten Morgen, ...").
  * Time-of-day and locale belong to the client. See ADR-008.
  */
 data class BngrGreetingModule(

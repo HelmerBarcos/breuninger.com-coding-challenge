@@ -7,7 +7,7 @@ import java.util.UUID
 import kotlin.random.Random
 
 /**
- * Every user owns purchases from day one — there are no purchase endpoints, so
+ * Every user owns purchases from day one - there are no purchase endpoints, so
  * registration seeds 3-5 mocked ones (same invariant as the Flyway demo users).
  */
 @Component

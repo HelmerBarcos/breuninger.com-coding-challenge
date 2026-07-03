@@ -3,7 +3,7 @@
 Everything needed to develop this project. Instructions are for **macOS** (the
 only platform this setup has been tested on); Windows users see the
 [Windows via WSL2](#windows-via-wsl2) section. Each section ends with a
-verification command — run it before moving on.
+verification command - run it before moving on.
 
 ## Prerequisites overview
 
@@ -94,11 +94,11 @@ code --install-extension ms-azuretools.vscode-docker
 Both dev modes support breakpoints; pick the matching launch config (Run and
 Debug panel, or F5):
 
-**App on the host** — config **"start:debug (app local, DB in Docker)"**.
+**App on the host** - config **"start:debug (app local, DB in Docker)"**.
 Plain `launch`: VS Code starts Postgres first (preLaunchTask `db:up`), runs the
 app under its own debugger, breakpoints just work.
 
-**App inside Docker** — config **"attach: app in Docker (5005)"**.
+**App inside Docker** - config **"attach: app in Docker (5005)"**.
 1. `./scripts/dev start:debug --docker` (the dev image starts the JVM with a
    JDWP agent listening on 5005, and compose publishes the port).
 2. Once the app is up, run the attach config: VS Code connects to
@@ -110,7 +110,7 @@ Notes:
   attach. Change to `suspend=y` in the Dockerfile CMD if you ever need to debug
   startup itself.
 - After editing code in `--docker` mode, recompile (`./mvnw compile` or VS Code
-  build on save) — devtools restarts the app in the container and the debugger
+  build on save) - devtools restarts the app in the container and the debugger
   reattaches automatically.
 
 ## 6. Optional tooling
@@ -129,7 +129,7 @@ rather than natively:
 2. **Docker Desktop for Windows** with the WSL2 backend enabled
    (Settings -> Resources -> WSL integration -> enable for Ubuntu). `docker` is then
    available inside WSL.
-3. **Inside WSL**, follow sections 2–3 above verbatim (SDKMAN + JDK 21) — they are
+3. **Inside WSL**, follow sections 2-3 above verbatim (SDKMAN + JDK 21) - they are
    Linux commands and work unchanged. Clone the repo inside the WSL filesystem
    (`~/...`, not `/mnt/c/...`) or file watching and build performance suffer badly.
 4. **VS Code on Windows** + the "WSL" extension (`ms-vscode-remote.remote-wsl`):
@@ -146,5 +146,5 @@ SDKMAN doesn't run there and `scripts/dev` would need a PowerShell port.
 docker --version && java -version && ./mvnw -version
 ```
 
-Then start developing — see the workflow commands in [`CLAUDE.md`](../../CLAUDE.md)
+Then start developing - see the workflow commands in [`CLAUDE.md`](../../CLAUDE.md)
 or run `./scripts/dev` for usage.

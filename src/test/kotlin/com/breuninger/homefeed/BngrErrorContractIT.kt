@@ -21,7 +21,7 @@ import kotlin.test.assertTrue
 
 /**
  * The error contract (ADR-010): every error response is an RFC 9457 problem
- * with status + detail + an errors[] array of {code, message, field?} — codes
+ * with status + detail + an errors[] array of {code, message, field?} - codes
  * are what the client UI renders on, and one response can carry several errors.
  */
 @SpringBootTest(

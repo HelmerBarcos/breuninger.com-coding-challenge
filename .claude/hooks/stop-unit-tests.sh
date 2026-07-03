@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Stop: run fast unit tests (integration *IT tests are skipped — too slow for a
+# Stop: run fast unit tests (integration *IT tests are skipped - too slow for a
 # hook). If tests fail, exit 2 blocks the stop and feeds the failure back to
 # Claude so no turn ends with a red build.
 input=$(cat)

@@ -3,16 +3,16 @@
 Szenario: ein Windows-Rechner mit JDK 21, aber ohne Docker (und ohne die
 Rechte, es zu installieren). Ziel: das Projekt zum Laufen bringen. Die App
 braucht ein echtes Postgres (Flyway + JPA mit `ddl-auto=validate`), deshalb
-ist der Fallback ein **portables Postgres** — braucht weder Admin-Rechte noch
+ist der Fallback ein **portables Postgres** - braucht weder Admin-Rechte noch
 Docker.
 
 ## Was unter Windows ohne Änderungen funktioniert
 
-- **`mvnw.cmd`** — das Repo bringt den Maven Wrapper für Windows mit; Maven
+- **`mvnw.cmd`** - das Repo bringt den Maven Wrapper für Windows mit; Maven
   wird nicht installiert.
 - Die **schnellen Tests** brauchen kein Docker: `mvnw.cmd test -DskipITs`
   (Unit + Serialisierung + ArchUnit). Nur `mvnw.cmd verify` (Testcontainers)
-  setzt Docker voraus — weglassen.
+  setzt Docker voraus - weglassen.
 - **`scripts/dev` NICHT verwenden** (ist Bash). Compose natürlich auch nicht.
 
 Zuerst prüfen:
@@ -27,8 +27,8 @@ mvnw.cmd -version    :: nutzt JAVA_HOME; falls Fehler: set "JAVA_HOME=C:\pfad\zu
 1. Die **Binaries als Zip** von PostgreSQL 16 für Windows x64 herunterladen
    (enterprisedb.com -> "Download PostgreSQL binaries", NICHT den Installer).
 2. Nach `C:\pgsql` entpacken (oder in einen beliebigen beschreibbaren Ordner).
-3. Einen lokalen Cluster initialisieren — mit dem User, den die App erwartet
-   (`homefeed`), und Auth `trust` (akzeptiert jedes Passwort — nur für die
+3. Einen lokalen Cluster initialisieren - mit dem User, den die App erwartet
+   (`homefeed`), und Auth `trust` (akzeptiert jedes Passwort - nur für die
    lokale Demo):
 
    ```bat
@@ -47,7 +47,7 @@ mvnw.cmd -version    :: nutzt JAVA_HOME; falls Fehler: set "JAVA_HOME=C:\pfad\zu
    C:\pgsql\bin\createdb -U homefeed homefeed
    ```
 
-6. Die App aus dem Repo-Root starten — Flyway legt das Schema an und seedet
+6. Die App aus dem Repo-Root starten - Flyway legt das Schema an und seedet
    die Demo-Daten automatisch:
 
    ```bat
@@ -71,7 +71,7 @@ C:\pgsql\bin\pg_ctl -D C:\pgsql\data stop
 ## Option B: offizieller PostgreSQL-Installer (falls Admin-Rechte vorhanden)
 
 PostgreSQL 16 mit dem EDB-Installer installieren. Der Superuser heißt dann
-`postgres` mit dem gewählten Passwort — die App per Env-Vars darauf zeigen
+`postgres` mit dem gewählten Passwort - die App per Env-Vars darauf zeigen
 lassen, statt `application.yml` anzufassen (klassisches cmd; in PowerShell
 `$env:VAR="..."`):
 
@@ -93,7 +93,7 @@ anderen Dialekt validieren, und ADR-009 sowie der Test-Abschnitt setzen
 bewusst auf "echtes Postgres, kein H2". Ein portables Postgres kostet fünf
 Minuten und führt exakt denselben Code aus wie die Produktion.
 
-## Kurzfassung (zum Diktieren am Telefon)
+## Kurzfassung
 
 1. Zip mit Postgres-16-Binaries herunterladen -> entpacken.
 2. `initdb -D data -U homefeed -A trust` -> `pg_ctl -D data start` -> `createdb -U homefeed homefeed`.

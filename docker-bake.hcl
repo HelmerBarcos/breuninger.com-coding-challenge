@@ -15,6 +15,6 @@ target "prod" {
 target "dev" {
   dockerfile = "Dockerfile"
   target     = "dev"
-  // dev image only ever runs on the local machine — multi-arch buys nothing here
+  // dev image only ever runs on the local machine - multi-arch buys nothing here
   tags       = ["breuninger/homefeed:dev"]
 }

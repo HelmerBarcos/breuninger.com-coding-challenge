@@ -2,7 +2,7 @@ package com.breuninger.homefeed.feed.domain
 
 /**
  * The extension port of the homefeed (ADR-002). Domains contribute modules by
- * implementing this interface as a Spring bean — the feed discovers them by
+ * implementing this interface as a Spring bean - the feed discovers them by
  * injection and never knows which domains exist.
  */
 interface BngrModuleProvider {

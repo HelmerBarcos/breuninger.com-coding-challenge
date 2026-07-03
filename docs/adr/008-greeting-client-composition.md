@@ -35,7 +35,7 @@ The greeting payload carries identity data only:
 ```
 
 Both fields are `null` for anonymous requests (the app renders a generic
-greeting). The client composes the final string — salutation bucket from its
+greeting). The client composes the final string - salutation bucket from its
 clock, language from its locale, name from the payload. The user model also
 carries `gender` (`MALE | FEMALE | DIVERSE`), exposed in the user DTO, so
 clients can render gendered salutations where the locale requires them.

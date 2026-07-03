@@ -6,7 +6,7 @@ description: Scaffold a new homefeed module type (domain model, ModuleProvider, 
 # Add Feed Module
 
 Adding a module NEVER modifies `BngrHomefeedService` or any existing provider.
-If a step seems to require that, stop and re-read ADR-002 — something is wrong.
+If a step seems to require that, stop and re-read ADR-002 - something is wrong.
 
 ## Inputs to collect (ask if not given)
 
@@ -14,7 +14,7 @@ If a step seems to require that, stop and re-read ADR-002 — something is wrong
 2. Owning domain package: `catalog`, `orders`, `auth`, or a new domain under
    `com.breuninger.homefeed` (new domain = also check the ArchUnit dependency rules)
 3. Payload fields (names + types)
-4. Feed position (`order` value — look at existing providers to pick a slot)
+4. Feed position (`order` value - look at existing providers to pick a slot)
 5. Protected? (only rendered for authenticated users -> provider returns `null`
    when `ctx.user == null`)
 
@@ -27,7 +27,7 @@ If a step seems to require that, stop and re-read ADR-002 — something is wrong
    `@Component`. Simulated latency via the shared latency configuration property,
    never a hardcoded `delay()`.
 3. **DTO** in `feed/api`: `Bngr<Name>ModuleDto` implementing the sealed DTO interface;
-   mapping added to the `toDto()` extension function (the `when` is exhaustive — the
+   mapping added to the `toDto()` extension function (the `when` is exhaustive - the
    compiler will point at it).
 4. **Serialization registration**: constant in `BngrModuleTypes` (snake_case) +
    `@JsonSubTypes` entry. These are the only touches to existing files.

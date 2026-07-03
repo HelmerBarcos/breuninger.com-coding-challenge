@@ -27,7 +27,7 @@ class BngrSecurityConfig {
 
     /**
      * The feed endpoint is permitAll on purpose: authentication is optional
-     * there, and the providers decide per module via the feed context — no
+     * there, and the providers decide per module via the feed context - no
      * duplicated public/private routes (ADR-005). A present-but-invalid Bearer
      * token still yields 401 (resource server semantics).
      */
@@ -57,7 +57,7 @@ class BngrSecurityConfig {
 
     /**
      * In-memory RSA keypair, regenerated on every start: issued tokens die with
-     * the process — an accepted trade-off at this stage (ADR-005). A real
+     * the process - an accepted trade-off at this stage (ADR-005). A real
      * deployment would point the resource server at an external issuer/JWKS.
      */
     @Bean

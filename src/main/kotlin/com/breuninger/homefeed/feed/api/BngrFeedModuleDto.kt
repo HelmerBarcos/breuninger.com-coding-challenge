@@ -35,11 +35,11 @@ sealed interface BngrFeedModuleDto
 /**
  * Identity data only, deliberately no composed salutation ("Guten Morgen, ..."):
  * the salutation depends on the client's local time and locale, which the server
- * does not know — the app composes it. Both names are null for anonymous callers.
+ * does not know - the app composes it. Both names are null for anonymous callers.
  * See ADR-008.
  */
 @Schema(
-    description = "Personal greeting slot, always first in the feed. Carries identity data only — " +
+    description = "Personal greeting slot, always first in the feed. Carries identity data only - " +
         "the app composes the localized, time-of-day salutation itself (the server cannot know " +
         "the client's clock or locale). Both names are null for anonymous callers: render a " +
         "generic greeting then.",
@@ -53,7 +53,7 @@ data class BngrGreetingModuleDto(
 
 @Schema(description = "Marketing banner for the currently active sale campaign. Absent from the feed when no campaign is active.")
 data class BngrSaleBannerModuleDto(
-    @get:Schema(example = "Mid-Season Sale – bis zu 30%")
+    @get:Schema(example = "Mid-Season Sale - bis zu 30%")
     val headline: String,
     @get:Schema(description = "Label for the call-to-action button.", example = "Jetzt shoppen")
     val ctaLabel: String,
@@ -87,7 +87,7 @@ data class BngrProductDto(
     val name: String,
     @get:Schema(example = "BOSS")
     val brand: String,
-    @get:Schema(description = "Price in euro cents — clients format the currency.", example = "44900")
+    @get:Schema(description = "Price in euro cents - clients format the currency.", example = "44900")
     val priceCents: Int,
     val imageUrl: String,
 )

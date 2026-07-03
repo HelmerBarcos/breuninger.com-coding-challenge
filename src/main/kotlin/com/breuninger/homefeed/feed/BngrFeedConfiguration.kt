@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration
 
 /**
  * Spring wiring for the framework-free feed domain: every BngrModuleProvider
- * bean in the context is discovered here — registering a provider is all a
+ * bean in the context is discovered here - registering a provider is all a
  * domain needs to do to appear in the feed.
  */
 @Configuration

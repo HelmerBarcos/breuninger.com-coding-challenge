@@ -26,7 +26,7 @@ class BngrGlobalExceptionHandler {
 
     private val log = LoggerFactory.getLogger(BngrGlobalExceptionHandler::class.java)
 
-    /** All validation failures at once — the client fixes the form in one round trip. */
+    /** All validation failures at once - the client fixes the form in one round trip. */
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun invalidBody(e: MethodArgumentNotValidException): ProblemDetail =
         bngrProblemOf(

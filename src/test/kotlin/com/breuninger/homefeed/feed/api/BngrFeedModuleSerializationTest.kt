@@ -23,7 +23,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * The `type` discriminator is the contract with the mobile clients (ADR-003) —
+ * The `type` discriminator is the contract with the mobile clients (ADR-003) -
  * every module type asserts its wire value here. One parameterized case per
  * sealed subtype: adding a module type without extending this source is caught
  * by the count assertion below.

@@ -16,7 +16,7 @@ data class BngrHomefeed(
  * Assembles the homefeed by fanning out to all registered providers concurrently:
  * feed latency is the slowest provider, not the sum (ADR-004).
  *
- * Registered as a bean in BngrFeedConfiguration — this class stays framework-free.
+ * Registered as a bean in BngrFeedConfiguration - this class stays framework-free.
  */
 class BngrHomefeedService(providers: List<BngrModuleProvider>) {
 
@@ -37,7 +37,7 @@ class BngrHomefeedService(providers: List<BngrModuleProvider>) {
 
     /**
      * A failing provider costs its own module, never the whole feed (ADR-004).
-     * CancellationException must propagate — swallowing it would break structured concurrency.
+     * CancellationException must propagate - swallowing it would break structured concurrency.
      */
     private suspend fun provideDegradingOnFailure(
         provider: BngrModuleProvider,

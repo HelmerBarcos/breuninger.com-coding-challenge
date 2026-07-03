@@ -23,7 +23,7 @@ to separate services is a real concern.
 
 **A** is the tutorial default: simple, but a feature touches every package and
 the extension mechanism has no obvious home. **B** applies dependency inversion
-uniformly — clean, but most of this service is pass-through CRUD where ports add
+uniformly - clean, but most of this service is pass-through CRUD where ports add
 cost without protecting anything. **C** groups code by business domain
 (`feed/`, `catalog/`, `orders/`, `auth/`, `shared/`) with light internal
 separation, and reserves the full hexagonal treatment for the one place the
@@ -36,7 +36,7 @@ JPA imports) and contains the sealed `BngrFeedModule`, the `BngrModuleProvider`
 port and `BngrHomefeedService`. Other domains plug in by implementing
 `BngrModuleProvider`; they depend on `feed/domain`, never on each other (sole
 declared exception: `auth -> orders`, to mock purchases at registration). Domain
-packages use Spring Data repositories directly — no ports where there is no
+packages use Spring Data repositories directly - no ports where there is no
 logic to protect.
 
 ## Consequences

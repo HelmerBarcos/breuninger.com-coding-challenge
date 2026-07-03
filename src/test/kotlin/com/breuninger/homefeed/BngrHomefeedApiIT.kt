@@ -43,7 +43,7 @@ class BngrHomefeedApiIT(@Autowired private val rest: TestRestTemplate) {
         assertTrue(greeting.get("lastName").isNull)
 
         val banner = modules.first { it.get("type").asText() == "sale_banner" }
-        assertEquals("Mid-Season Sale – bis zu 30%", banner.get("headline").asText())
+        assertEquals("Mid-Season Sale - bis zu 30%", banner.get("headline").asText())
         assertEquals("Jetzt shoppen", banner.get("ctaLabel").asText())
 
         val teaser = modules.first { it.get("type").asText() == "product_teaser" }

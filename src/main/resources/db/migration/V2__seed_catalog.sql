@@ -12,4 +12,4 @@ INSERT INTO products (id, name, brand, price_cents, image_url) VALUES
     ('11111111-0000-0000-0000-000000000008', 'Oversized Blazer', 'Anine Bing', 32900, 'https://placehold.co/600x800?text=Oversized+Blazer');
 
 INSERT INTO sale_campaigns (id, headline, cta_label, image_url, active) VALUES
-    ('22222222-0000-0000-0000-000000000001', 'Mid-Season Sale – bis zu 30%', 'Jetzt shoppen', 'https://placehold.co/1200x400?text=Mid-Season+Sale', TRUE);
+    ('22222222-0000-0000-0000-000000000001', 'Mid-Season Sale - bis zu 30%', 'Jetzt shoppen', 'https://placehold.co/1200x400?text=Mid-Season+Sale', TRUE);

@@ -1,6 +1,6 @@
 package com.breuninger.homefeed.shared
 
-/** Every path the service exposes — security rules, controllers and docs reference these, never literals. */
+/** Every path the service exposes - security rules, controllers and docs reference these, never literals. */
 object BngrApiPaths {
     const val API_V1 = "/api/v1"
 
@@ -17,7 +17,7 @@ object BngrApiPaths {
     const val HEALTH = "/actuator/health"
 }
 
-/** Custom claims carried in the self-issued JWT (ADR-005) — written by the issuer, read at the web boundary. */
+/** Custom claims carried in the self-issued JWT (ADR-005) - written by the issuer, read at the web boundary. */
 object BngrJwtClaims {
     const val FIRST_NAME = "firstName"
     const val LAST_NAME = "lastName"

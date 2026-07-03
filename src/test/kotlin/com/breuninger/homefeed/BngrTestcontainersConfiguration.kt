@@ -9,7 +9,7 @@ import org.testcontainers.utility.DockerImageName
 @TestConfiguration(proxyBeanMethods = false)
 class BngrTestcontainersConfiguration {
 
-    /** Same image as docker-compose — tests run against the database we actually ship with. */
+    /** Same image as docker-compose - tests run against the database we actually ship with. */
     @Bean
     @ServiceConnection
     fun postgresContainer(): PostgreSQLContainer<*> =

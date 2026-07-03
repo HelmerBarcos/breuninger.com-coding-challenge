@@ -7,7 +7,7 @@ Status: Accepted
 
 The mobile app must render error UI from responses without parsing prose: it
 needs a machine-readable code, the HTTP status, and a brief server explanation
-— and a single request can fail for several reasons at once (e.g. two invalid
+- and a single request can fail for several reasons at once (e.g. two invalid
 form fields). Separately, a lenient API hides client bugs: a misspelled query
 parameter that is silently ignored "works" and does nothing, and an unknown
 body field is dropped without anyone noticing.
@@ -18,7 +18,7 @@ body field is dropped without anyone noticing.
 |---|---|---|---|
 | Client renders by | Parsing `detail` prose (fragile) | Custom code field | Stable `errors[].code` enum |
 | Multiple errors per response | No (single detail) | Yes | Yes |
-| Standard media type / tooling | `application/problem+json` | Lost | Kept — RFC 9457 allows extension members |
+| Standard media type / tooling | `application/problem+json` | Lost | Kept - RFC 9457 allows extension members |
 | Infrastructure interop (gateways, logging) | Good | None | Good |
 
 **A** is standard but mono-error and human-oriented. **B** solves the client's
@@ -42,7 +42,7 @@ Every error response is a ProblemDetail extended with `errors[]`, each entry a
 }
 ```
 
-- `code` comes from the single registry `BngrErrorCode` (shared) — the client's
+- `code` comes from the single registry `BngrErrorCode` (shared) - the client's
   contract; messages are for developers and may change freely.
 - `field` attributes an error to a request field/parameter when possible.
 - Domain handlers (auth) reuse the same shape via `bngrProblemOf(...)`.
@@ -63,12 +63,12 @@ Every error response is a ProblemDetail extended with `errors[]`, each entry a
 
 ## Consequences
 
-- Adding an error case means adding a `BngrErrorCode` constant — the registry
+- Adding an error case means adding a `BngrErrorCode` constant - the registry
   doubles as client-facing documentation.
 - Strictness is a behavior change lever: clients get fast feedback on typos,
   but adding a parameter to an endpoint later requires declaring it (that is
   the point).
-- One more moving part (the interceptor) — covered by the error-contract IT.
+- One more moving part (the interceptor) - covered by the error-contract IT.
 
 ## Enforcement
 
