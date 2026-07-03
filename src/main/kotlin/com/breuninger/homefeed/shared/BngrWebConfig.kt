@@ -6,15 +6,23 @@ import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityScheme
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-class BngrWebConfig : WebMvcConfigurer {
+class BngrWebConfig(
+    private val unknownParameterInterceptor: BngrUnknownParameterInterceptor,
+) : WebMvcConfigurer {
 
     /** /scalar serves the Scalar API reference (static/scalar.html renders /v3/api-docs). */
     override fun addViewControllers(registry: ViewControllerRegistry) {
         registry.addRedirectViewController("/scalar", "/scalar.html")
+    }
+
+    /** Strictness is scoped to our API — actuator and docs keep their own conventions. */
+    override fun addInterceptors(registry: InterceptorRegistry) {
+        registry.addInterceptor(unknownParameterInterceptor).addPathPatterns("/api/**")
     }
 
     @Bean

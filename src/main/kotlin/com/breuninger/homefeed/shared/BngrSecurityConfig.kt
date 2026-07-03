@@ -43,7 +43,11 @@ class BngrSecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/api/v1/auth/register", "/api/v1/auth/login").permitAll()
                     .requestMatchers("/actuator/health/**").permitAll()
                     .requestMatchers("/v3/api-docs/**", "/scalar", "/scalar.html").permitAll()
-                    .anyRequest().authenticated()
+                    // non-health actuator endpoints stay gated
+                    .requestMatchers("/actuator/**").authenticated()
+                    // everything else falls through to MVC so unknown paths answer a 404
+                    // problem body (ADR-010) instead of a misleading 401 from the filter
+                    .anyRequest().permitAll()
             }
             .oauth2ResourceServer { it.jwt {} }
             .build()

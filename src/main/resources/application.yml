@@ -10,6 +10,10 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+  jackson:
+    deserialization:
+      # unknown body fields are a client bug — reject them instead of hiding them (ADR-010)
+      fail-on-unknown-properties: true
 
 server:
   shutdown: graceful
