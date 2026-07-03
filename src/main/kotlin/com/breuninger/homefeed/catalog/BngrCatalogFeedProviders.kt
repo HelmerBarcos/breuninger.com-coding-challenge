@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.MessageSource
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Component
+import java.util.Locale
 
 /** No active campaign -> no banner: the provider returns null instead of an empty module. */
 @Component
@@ -27,12 +28,16 @@ class BngrSaleBannerModuleProvider(
     override suspend fun provide(context: BngrFeedContext): BngrFeedModule? {
         val campaign = simulator.simulateRemoteCall { campaigns.findFirstByActiveTrue() } ?: return null
         return BngrSaleBannerModule(
-            headline = campaign.headline,
-            ctaLabel = campaign.ctaLabel,
+            headline = localizedText(context.locale, german = campaign.headline, english = campaign.headlineEn),
+            ctaLabel = localizedText(context.locale, german = campaign.ctaLabel, english = campaign.ctaLabelEn),
             imageUrl = campaign.imageUrl,
         )
     }
 }
+
+/** Data localization (ADR-011): English only when requested AND translated; German is the base. */
+private fun localizedText(locale: Locale, german: String, english: String?): String =
+    if (locale.language == Locale.ENGLISH.language) english ?: german else german
 
 @Component
 class BngrProductTeaserModuleProvider(

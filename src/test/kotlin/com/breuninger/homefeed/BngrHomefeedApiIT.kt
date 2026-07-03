@@ -93,8 +93,14 @@ class BngrHomefeedApiIT(@Autowired private val rest: TestRestTemplate) {
         assertEquals("New at Breuninger", headlineOf(english, "product_teaser"))
         assertEquals("Recommended for you", headlineOf(english, "recommendations"))
 
+        // campaign texts are localized as data (i18n columns), not via bundles
+        assertEquals("Mid-Season Sale - up to 30% off", headlineOf(english, "sale_banner"))
+        val englishBanner = english.get("modules").first { it.get("type").asText() == "sale_banner" }
+        assertEquals("Shop now", englishBanner.get("ctaLabel").asText())
+
         // unsupported language degrades to German instead of failing
         assertEquals("Für dich empfohlen", headlineOf(feedWithLanguage("fr-FR"), "recommendations"))
+        assertEquals("Jetzt shoppen", feedWithLanguage(null).get("modules").first { it.get("type").asText() == "sale_banner" }.get("ctaLabel").asText())
     }
 
     @Test
