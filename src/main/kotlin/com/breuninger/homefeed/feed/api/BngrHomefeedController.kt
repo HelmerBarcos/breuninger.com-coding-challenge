@@ -4,6 +4,7 @@ import com.breuninger.homefeed.feed.domain.BngrFeedContext
 import com.breuninger.homefeed.feed.domain.BngrFeedUser
 import com.breuninger.homefeed.feed.domain.BngrHomefeedService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.security.core.Authentication
@@ -13,15 +14,21 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 
 /** Envelope object, never a bare array: metadata can be added without breaking clients (ADR-003). */
+@Schema(description = "The homefeed envelope. `modules` is the ordered list the app renders top to bottom; `meta` is diagnostic metadata.")
 data class BngrHomefeedResponse(
+    @get:Schema(description = "Feed modules in render order. Clients must skip unknown `type` values.")
     val modules: List<BngrFeedModuleDto>,
     val meta: BngrHomefeedMeta,
 )
 
+@Schema(description = "Diagnostic metadata about how this feed was assembled.")
 data class BngrHomefeedMeta(
+    @get:Schema(description = "Server time at which the feed was assembled.")
     val generatedAt: Instant,
     /** Wall-clock time of the concurrent provider fan-out — max of providers, not sum (ADR-004). */
+    @get:Schema(description = "Wall-clock milliseconds of the concurrent module fan-out — roughly the slowest provider, not the sum.", example = "163")
     val assemblyTimeMs: Long,
+    @get:Schema(description = "Number of modules in this response.", example = "5")
     val moduleCount: Int,
 )
 

@@ -6,6 +6,7 @@ import com.breuninger.homefeed.auth.BngrRegistration
 import com.breuninger.homefeed.auth.BngrTokenService
 import com.breuninger.homefeed.auth.BngrUserEntity
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Email
@@ -19,14 +20,21 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.validation.annotation.Validated
 
+@Schema(description = "New account data. Registering automatically seeds 3-5 mock purchases for the user — there are no purchase endpoints.")
 data class BngrRegisterRequest(
-    @field:Email @field:NotBlank val email: String,
-    @field:Size(min = 8, max = 100) val password: String,
+    @field:Email @field:NotBlank
+    @get:Schema(example = "anna.muster@example.com")
+    val email: String,
+    @field:Size(min = 8, max = 100)
+    @get:Schema(description = "8-100 characters.", example = "super-secret-1")
+    val password: String,
     @field:NotBlank val firstName: String,
     @field:NotBlank val lastName: String,
+    @get:Schema(description = "One of the three legal genders in Germany (männlich / weiblich / divers).")
     val gender: BngrGender,
 )
 
+@Schema(description = "Public representation of a user account — never contains credentials.")
 data class BngrUserDto(
     val email: String,
     val firstName: String,
@@ -34,14 +42,18 @@ data class BngrUserDto(
     val gender: BngrGender,
 )
 
+@Schema(description = "Credentials to exchange for a Bearer token.")
 data class BngrLoginRequest(
     @field:Email @field:NotBlank val email: String,
     @field:NotBlank val password: String,
 )
 
+@Schema(description = "Short-lived JWT for the Authorization header: `Authorization: Bearer <accessToken>`.")
 data class BngrTokenResponse(
     val accessToken: String,
+    @get:Schema(description = "Token lifetime in seconds.", example = "3600")
     val expiresInSeconds: Long,
+    @get:Schema(example = "Bearer")
     val tokenType: String = "Bearer",
 )
 
