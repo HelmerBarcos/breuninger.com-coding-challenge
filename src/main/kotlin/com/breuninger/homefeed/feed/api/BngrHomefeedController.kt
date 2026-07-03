@@ -4,8 +4,10 @@ import com.breuninger.homefeed.feed.domain.BngrFeedContext
 import com.breuninger.homefeed.feed.domain.BngrFeedUser
 import com.breuninger.homefeed.feed.domain.BngrHomefeedService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
-import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
@@ -38,9 +40,49 @@ class BngrHomefeedController(private val homefeedService: BngrHomefeedService) {
 
     @Operation(
         summary = "The ordered homefeed for the mobile app",
-        description = "Authentication is optional: a valid Bearer token personalizes the greeting " +
-            "and adds the protected order_history module. Anonymous callers get the public feed.",
-        security = [SecurityRequirement(name = "bearerAuth")],
+        description = "Authentication is **optional**: call it without any Authorization header for the " +
+            "public feed, or authenticate (padlock above) to personalize the greeting and receive the " +
+            "protected order_history module. Note: a *present but invalid* Bearer token is rejected " +
+            "with 401 — omit the header entirely for the anonymous feed.",
+    )
+    @ApiResponse(
+        responseCode = "200",
+        description = "The ordered feed. Module set depends on authentication.",
+        content = [
+            Content(
+                mediaType = "application/json",
+                schema = Schema(implementation = BngrHomefeedResponse::class),
+                examples = [
+                    ExampleObject(
+                        name = "anonymous",
+                        summary = "Without Authorization header — 4 public modules, greeting names are null",
+                        value = """{
+                          "modules": [
+                            { "type": "greeting", "id": "greeting", "firstName": null, "lastName": null },
+                            { "type": "sale_banner", "id": "sale-banner", "headline": "Mid-Season Sale – bis zu 30%", "ctaLabel": "Jetzt shoppen", "imageUrl": "https://placehold.co/1200x400" },
+                            { "type": "product_teaser", "id": "product-teaser", "headline": "Neu bei Breuninger", "products": [ { "id": "11111111-0000-0000-0000-000000000001", "name": "Cashmere Crewneck Sweater", "brand": "Breuninger Collection", "priceCents": 19900, "imageUrl": "https://placehold.co/600x800" } ] },
+                            { "type": "recommendations", "id": "recommendations", "headline": "Für dich empfohlen", "products": [ { "id": "11111111-0000-0000-0000-000000000005", "name": "Silk Twill Scarf", "brand": "Gucci", "priceCents": 21900, "imageUrl": "https://placehold.co/600x800" } ] }
+                          ],
+                          "meta": { "generatedAt": "2026-07-03T12:00:00Z", "assemblyTimeMs": 163, "moduleCount": 4 }
+                        }""",
+                    ),
+                    ExampleObject(
+                        name = "authenticated",
+                        summary = "With a valid Bearer token — personalized greeting plus order_history",
+                        value = """{
+                          "modules": [
+                            { "type": "greeting", "id": "greeting", "firstName": "Felix", "lastName": "Junghans" },
+                            { "type": "sale_banner", "id": "sale-banner", "headline": "Mid-Season Sale – bis zu 30%", "ctaLabel": "Jetzt shoppen", "imageUrl": "https://placehold.co/1200x400" },
+                            { "type": "product_teaser", "id": "product-teaser", "headline": "Neu bei Breuninger", "products": [ { "id": "11111111-0000-0000-0000-000000000001", "name": "Cashmere Crewneck Sweater", "brand": "Breuninger Collection", "priceCents": 19900, "imageUrl": "https://placehold.co/600x800" } ] },
+                            { "type": "recommendations", "id": "recommendations", "headline": "Für dich empfohlen", "products": [ { "id": "11111111-0000-0000-0000-000000000005", "name": "Silk Twill Scarf", "brand": "Gucci", "priceCents": 21900, "imageUrl": "https://placehold.co/600x800" } ] },
+                            { "type": "order_history", "id": "order-history", "purchases": [ { "productName": "Leather Chelsea Boots", "priceCents": 34900, "purchasedAt": "2026-06-26T09:30:00Z" } ] }
+                          ],
+                          "meta": { "generatedAt": "2026-07-03T12:00:00Z", "assemblyTimeMs": 171, "moduleCount": 5 }
+                        }""",
+                    ),
+                ],
+            ),
+        ],
     )
     @GetMapping("/api/v1/homefeed")
     suspend fun homefeed(authentication: Authentication?): BngrHomefeedResponse {

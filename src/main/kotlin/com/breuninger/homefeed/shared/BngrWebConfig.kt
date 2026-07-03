@@ -3,7 +3,12 @@ package com.breuninger.homefeed.shared
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
+import io.swagger.v3.oas.models.security.OAuthFlow
+import io.swagger.v3.oas.models.security.OAuthFlows
+import io.swagger.v3.oas.models.security.Scopes
+import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
+import org.springdoc.core.customizers.OpenApiCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
@@ -32,14 +37,46 @@ class BngrWebConfig(
                 .title("Breuninger Homefeed API")
                 .description(
                     "Composes the mobile app homefeed as an ordered list of typed modules. " +
-                        "Authentication is optional on the feed endpoint; a Bearer token adds protected modules.",
+                        "Authentication is optional on the feed endpoint; a Bearer token adds protected modules. " +
+                        "Authenticate below with a demo user (e.g. felix.junghans@breuninger.de / breuninger-demo) " +
+                        "to try the personalized feed live.",
                 )
                 .version("v1"),
         )
         .components(
-            Components().addSecuritySchemes(
-                "bearerAuth",
-                SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT"),
-            ),
+            Components()
+                .addSecuritySchemes(
+                    "bearerAuth",
+                    SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
+                        .description("Paste a token obtained from /api/v1/auth/login."),
+                )
+                .addSecuritySchemes(
+                    "oauthPassword",
+                    SecurityScheme()
+                        .type(SecurityScheme.Type.OAUTH2)
+                        .description("Live login for the interactive reference: username = email of a demo user, e.g. felix.junghans@breuninger.de / breuninger-demo.")
+                        .flows(
+                            OAuthFlows().password(
+                                OAuthFlow().tokenUrl("/api/v1/auth/token").scopes(Scopes()),
+                            ),
+                        ),
+                ),
         )
+
+    /**
+     * OpenAPI expresses "authentication is optional" as a security list that
+     * contains an EMPTY requirement alongside the real ones — not expressible
+     * with the @Operation annotation alone. Without this, interactive clients
+     * (Scalar) always attach an Authorization header, and a present-but-empty
+     * Bearer token is correctly rejected with 401.
+     */
+    @Bean
+    fun bngrOptionalFeedAuthCustomizer(): OpenApiCustomizer = OpenApiCustomizer { api ->
+        api.paths["/api/v1/homefeed"]?.get?.security = listOf(
+            SecurityRequirement(), // anonymous is a first-class way to call this endpoint
+            SecurityRequirement().addList("bearerAuth"),
+            SecurityRequirement().addList("oauthPassword"),
+        )
+    }
 }

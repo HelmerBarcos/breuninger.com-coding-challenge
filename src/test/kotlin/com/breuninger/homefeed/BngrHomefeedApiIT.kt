@@ -63,4 +63,24 @@ class BngrHomefeedApiIT(@Autowired private val rest: TestRestTemplate) {
         assertEquals(HttpStatus.OK, spec.statusCode)
         assertTrue(spec.body!!.get("paths").has("/api/v1/homefeed"))
     }
+
+    @Test
+    fun `spec documents feed auth as optional with anonymous and authenticated examples`() {
+        val spec = rest.getForEntity("/v3/api-docs", JsonNode::class.java).body!!
+        val feedGet = spec.get("paths").get("/api/v1/homefeed").get("get")
+
+        // an EMPTY requirement in the security list = callable without any Authorization header
+        val security = feedGet.get("security")
+        assertTrue(security.any { it.isEmpty }, "security list must contain the empty (anonymous) requirement")
+        assertTrue(security.any { it.has("bearerAuth") })
+        assertTrue(security.any { it.has("oauthPassword") })
+
+        val examples = feedGet.get("responses").get("200").get("content").get("application/json").get("examples")
+        assertTrue(examples.has("anonymous") && examples.has("authenticated"))
+
+        // the live-login flow interactive docs use
+        val tokenUrl = spec.get("components").get("securitySchemes").get("oauthPassword")
+            .get("flows").get("password").get("tokenUrl").asText()
+        assertEquals("/api/v1/auth/token", tokenUrl)
+    }
 }
