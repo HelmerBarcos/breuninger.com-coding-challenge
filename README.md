@@ -86,6 +86,20 @@ in parallel (Kotlin coroutines), each simulating ~150 ms of backend latency -
 the feed takes ~max, not ~sum. A failing provider costs its own module, never
 the whole feed.
 
+### Content language (`Accept-Language`)
+
+Module content (teaser/recommendations headlines) is localized via the
+`Accept-Language` header: `de` (default) and `en` are supported; anything
+missing, unsupported or malformed degrades to German (ADR-011). Only content -
+error messages stay English (ADR-010), the greeting carries no text (ADR-008),
+and campaign texts are data. Translations live in
+[`src/main/resources/i18n`](src/main/resources/i18n).
+
+```bash
+curl -s localhost:8080/api/v1/homefeed -H "Accept-Language: en" | jq -r '.modules[2].headline'
+# New at Breuninger
+```
+
 ## Errors
 
 Every error is an RFC 9457 problem (`application/problem+json`) extended with an
@@ -109,6 +123,29 @@ unknown body fields -> 400 `UNKNOWN_FIELD`, unknown query parameters -> 400
 `UNKNOWN_PARAMETER` (one error per parameter), unknown paths -> 404 `NOT_FOUND`
 with the same JSON shape, wrong method -> 405, unparseable JSON -> 400
 `MALFORMED_BODY`. The whole contract is pinned by `BngrErrorContractIT`.
+
+## Annahmen
+
+Die bewusst getroffenen Annahmen hinter dem Design:
+
+- **Default-Locale ist Deutsch, nicht Englisch** - es ist ein deutscher Shop.
+  Ohne (oder mit nicht unterstütztem) `Accept-Language`-Header kommt der
+  Inhalt auf Deutsch (ADR-011). System- und Fehlermeldungen sind davon
+  getrennt und immer Englisch (ADR-010).
+- **Der Client entscheidet über "Guten Morgen" vs. "Guten Tag"** - abhängig
+  von seiner lokalen Uhrzeit und seinem Locale. Der Server kennt beides nicht
+  und schickt deshalb nur Identitätsdaten im Greeting (ADR-008).
+- **Anonyme Aufrufe sind ein normaler Anwendungsfall**, kein Fehler: der Feed
+  antwortet ohne Token mit den öffentlichen Modulen; persönliche Module
+  erscheinen nur mit nachgewiesener Identität.
+- **Clients überspringen unbekannte Modultypen** - so kann der Feed wachsen,
+  ohne alte App-Versionen zu brechen (Forward Compatibility).
+- **Käufe sind Snapshots**: Produktname und Preis werden zum Kaufzeitpunkt
+  festgehalten, kein Foreign Key in den Katalog - wie echte Bestellpositionen.
+- **Ein Markt, ein Feed**: keine Pagination, keine Mandanten - der Feed ist
+  kurz genug für eine Antwort.
+- **Demo-Daten sind ausdrücklich keine Produktionsdaten** (geteiltes
+  Demo-Passwort, In-Memory-Signaturschlüssel - beides dokumentiert).
 
 ## Decisions
 
