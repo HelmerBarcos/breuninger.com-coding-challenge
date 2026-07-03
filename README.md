@@ -88,12 +88,15 @@ the whole feed.
 
 ### Content language (`Accept-Language`)
 
-Module content (teaser/recommendations headlines) is localized via the
-`Accept-Language` header: `de` (default) and `en` are supported; anything
-missing, unsupported or malformed degrades to German (ADR-011). Only content -
-error messages stay English (ADR-010), the greeting carries no text (ADR-008),
-and campaign texts are data. Translations live in
-[`src/main/resources/i18n`](src/main/resources/i18n).
+Module content is localized via the `Accept-Language` header: `de` (default)
+and `en` are supported; anything missing, unsupported or malformed degrades to
+German (ADR-011). Two mechanisms, one per text owner: service-owned texts
+(teaser/recommendations headlines) come from bundles in
+[`src/main/resources/i18n`](src/main/resources/i18n); data-owned texts
+(campaign headline, "Jetzt shoppen"/"Shop now") are localized as data via
+nullable `_en` columns with German fallback. Not localized: error messages
+(always English, ADR-010), the greeting (carries no text, ADR-008), and
+product/brand names (market-neutral on purpose).
 
 ```bash
 curl -s localhost:8080/api/v1/homefeed -H "Accept-Language: en" | jq -r '.modules[2].headline'

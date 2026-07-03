@@ -49,10 +49,12 @@ challenge for a Senior Backend/Infrastructure role. Decisions are recorded in
   (`toDto()`), no mapping libraries.
 - Serialization: Jackson polymorphic with `type` discriminator (ADR-003).
   API responses are envelope objects, never bare arrays.
-- i18n (ADR-011): module content strings come from `i18n/feed-content` bundles
-  (base bundle = German, the shop default; `en` available) resolved via the
-  `Accept-Language` header into `BngrFeedContext.locale`. System/error messages
-  stay English (ADR-010) - never couple the two.
+- i18n (ADR-011): service-owned content strings come from `i18n/feed-content`
+  bundles (base bundle = German, the shop default; `en` available) resolved via
+  the `Accept-Language` header into `BngrFeedContext.locale`; data-owned texts
+  (campaigns) are localized as data via nullable `_en` columns with German
+  fallback. System/error messages stay English (ADR-010) - never couple the two.
+  Product/brand names are never translated.
 - Errors (ADR-010): RFC 9457 `ProblemDetail` extended with `errors[]` of `BngrHttpError`
   (`code` from the `BngrErrorCode` registry, `message`, optional `field`) - build with
   `bngrProblemOf(...)`. The API is strict: unknown body fields, query params and paths

@@ -37,9 +37,12 @@ data for the feed.
   off so the server JVM locale never leaks in).
 - Spring's LocaleResolver stays `fixed=en`: validation and error messages
   remain English (ADR-010) no matter what the client sends.
-- Not localized on purpose: sale campaign texts (data owned by the campaign
-  record - localizing data is an i18n-columns problem, out of scope) and the
-  greeting (carries no text at all, ADR-008).
+- **Campaign texts are data, so they are localized as data**: nullable
+  `headline_en`/`cta_label_en` columns on the campaign record (V4), German
+  base columns as the fallback. Bundles are for texts the service owns;
+  i18n columns are for texts the data owns.
+- Not localized on purpose: product and brand names (market-neutral in
+  fashion) and the greeting (carries no text at all, ADR-008).
 
 ## Consequences
 
