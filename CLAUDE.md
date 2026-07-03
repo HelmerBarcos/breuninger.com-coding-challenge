@@ -49,7 +49,11 @@ challenge for a Senior Backend/Infrastructure role. Decisions are recorded in
   (`toDto()`), no mapping libraries.
 - Serialization: Jackson polymorphic with `type` discriminator (ADR-003).
   API responses are envelope objects, never bare arrays.
-- Errors: RFC 9457 `ProblemDetail` via `@RestControllerAdvice`. Endpoints under `/api/v1/`.
+- Errors (ADR-010): RFC 9457 `ProblemDetail` extended with `errors[]` of `BngrHttpError`
+  (`code` from the `BngrErrorCode` registry, `message`, optional `field`) — build with
+  `bngrProblemOf(...)`. The API is strict: unknown body fields, query params and paths
+  are rejected in this shape. New error case = new `BngrErrorCode` constant + assertion
+  in `BngrErrorContractIT`. Endpoints under `/api/v1/`.
 
 ## Adding a feed module
 
