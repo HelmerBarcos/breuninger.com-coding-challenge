@@ -51,6 +51,26 @@ class BngrHomefeedApiIT(@Autowired private val rest: TestRestTemplate) {
     }
 
     @Test
+    fun `produced dtos respect the model constraints`() {
+        // the wire payload never ships broken links, unbounded strings or negative prices
+        val modules = rest.getForEntity("/api/v1/homefeed", JsonNode::class.java).body!!.get("modules")
+
+        val products = modules.filter { it.has("products") }.flatMap { it.get("products") }
+        assertTrue(products.isNotEmpty())
+        products.forEach { product ->
+            val url = java.net.URI(product.get("imageUrl").asText())
+            assertTrue(url.scheme == "https", "image links must be absolute https URLs, got: $url")
+            assertTrue(product.get("name").asText().length in 1..255)
+            assertTrue(product.get("brand").asText().length in 1..100)
+            assertTrue(product.get("priceCents").asInt() >= 0)
+        }
+
+        val banner = modules.first { it.get("type").asText() == "sale_banner" }
+        assertTrue(java.net.URI(banner.get("imageUrl").asText()).scheme == "https")
+        assertTrue(banner.get("headline").asText().length in 1..255)
+    }
+
+    @Test
     fun `liveness and readiness probes answer`() {
         assertEquals(HttpStatus.OK, rest.getForEntity("/actuator/health/liveness", String::class.java).statusCode)
         assertEquals(HttpStatus.OK, rest.getForEntity("/actuator/health/readiness", String::class.java).statusCode)
