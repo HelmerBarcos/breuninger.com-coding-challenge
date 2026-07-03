@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Dev workflow entrypoint.
+#   ./scripts/dev start:debug            Postgres in Docker, app on the host (debug agent on 5005)
+#   ./scripts/dev start:debug --docker   Postgres + app both in Docker (dev image, auto-reload, debug on 5005)
+#   ./scripts/dev db:up                  only Postgres, returns once the healthcheck passes
+#   ./scripts/dev stop                   stop the whole stack
+set -euo pipefail
+cd "$(dirname "$0")/.."   # scripts/ -> repo root, where docker-compose.yml and mvnw live
+
+require_compose() {
+  [[ -f docker-compose.yml ]] || { echo "docker-compose.yml not created yet (phase A2)" >&2; exit 1; }
+}
+
+case "${1:-}" in
+  start:debug)
+    require_compose
+    if [[ "${2:-}" == "--docker" ]]; then
+      # compose starts postgres first (depends_on: service_healthy), then the app
+      # dev image; foreground so the logs stay visible, Ctrl+C stops the stack.
+      docker compose --profile app up --build
+    else
+      docker compose up -d --wait postgres
+      SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/homefeed" \
+        ./mvnw spring-boot:run \
+        -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+    fi
+    ;;
+  db:up)
+    require_compose
+    docker compose up -d --wait postgres
+    ;;
+  stop)
+    require_compose
+    docker compose --profile app down
+    ;;
+  *)
+    grep '^#   ' "$0" | sed 's/^#   //' >&2
+    exit 1
+    ;;
+esac

@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // F5: starts Postgres in Docker (waits until healthy), then the app on
+      // the host under the Java debugger. Equivalent to `./dev start:debug`.
+      "type": "java",
+      "name": "start:debug (app local, DB in Docker)",
+      "request": "launch",
+      "mainClass": "com.breuninger.homefeed.BngrHomefeedApplicationKt",
+      "projectName": "homefeed",
+      "preLaunchTask": "db:up",
+      "env": {
+        "SPRING_DATASOURCE_URL": "jdbc:postgresql://localhost:5432/homefeed"
+      }
+    },
+    {
+      // Companion of `./dev start:debug --docker`: run that first, then attach
+      // to the JDWP agent the dev container exposes on 5005.
+      "type": "java",
+      "name": "attach: app in Docker (5005)",
+      "request": "attach",
+      "hostName": "localhost",
+      "port": 5005
+    }
+  ]
+}

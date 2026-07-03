@@ -1,0 +1,33 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "db:up",
+      "detail": "Start Postgres in Docker and wait until its healthcheck passes",
+      "type": "shell",
+      "command": "docker compose up -d --wait postgres",
+      "problemMatcher": []
+    },
+    {
+      "label": "start:debug",
+      "detail": "DB in Docker, app on the host with debug agent on 5005",
+      "type": "shell",
+      "command": "./scripts/dev start:debug",
+      "problemMatcher": []
+    },
+    {
+      "label": "start:debug --docker",
+      "detail": "DB and app both in Docker (dev image, auto-reload)",
+      "type": "shell",
+      "command": "./scripts/dev start:debug --docker",
+      "problemMatcher": []
+    },
+    {
+      "label": "stack:down",
+      "detail": "Stop Postgres and the app container",
+      "type": "shell",
+      "command": "./scripts/dev stop",
+      "problemMatcher": []
+    }
+  ]
+}
