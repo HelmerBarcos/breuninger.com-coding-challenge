@@ -89,7 +89,31 @@ code --install-extension mathiasfrohlich.Kotlin
 code --install-extension ms-azuretools.vscode-docker
 ```
 
-## 5. Optional tooling
+## 5. Debugging from VS Code (breakpoints)
+
+Both dev modes support breakpoints; pick the matching launch config (Run and
+Debug panel, or F5):
+
+**App on the host** — config **"start:debug (app local, DB in Docker)"**.
+Plain `launch`: VS Code starts Postgres first (preLaunchTask `db:up`), runs the
+app under its own debugger, breakpoints just work.
+
+**App inside Docker** — config **"attach: app in Docker (5005)"**.
+1. `./scripts/dev start:debug --docker` (the dev image starts the JVM with a
+   JDWP agent listening on 5005, and compose publishes the port).
+2. Once the app is up, run the attach config: VS Code connects to
+   `localhost:5005` and breakpoints bind to the sources in your workspace.
+
+Notes:
+- The agent uses `suspend=n`: the app boots without waiting for a debugger, so
+  code that runs during startup (Flyway, bean init) executes before you can
+  attach. Change to `suspend=y` in the Dockerfile CMD if you ever need to debug
+  startup itself.
+- After editing code in `--docker` mode, recompile (`./mvnw compile` or VS Code
+  build on save) — devtools restarts the app in the container and the debugger
+  reattaches automatically.
+
+## 6. Optional tooling
 
 ```bash
 brew install ktlint   # enables the auto-format hook in .claude/hooks/ (no-op without it)
