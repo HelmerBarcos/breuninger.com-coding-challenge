@@ -2,6 +2,9 @@ package com.breuninger.homefeed
 
 import com.fasterxml.jackson.databind.JsonNode
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -11,6 +14,8 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
+import java.util.stream.Stream
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -26,17 +31,22 @@ import kotlin.test.assertTrue
 @Import(BngrTestcontainersConfiguration::class)
 class BngrErrorContractIT(@Autowired private val rest: TestRestTemplate) {
 
-    private fun codesOf(body: JsonNode): List<String> = body.get("errors").map { it.get("code").asText() }
+    /** One strictness rule per row; each rejected request answers exactly one typed error. */
+    @ParameterizedTest(name = "{0} -> {2} {3}")
+    @MethodSource("singleErrorCases")
+    fun `strict api answers a single typed error`(
+        name: String,
+        call: BngrApiCall,
+        expectedStatus: HttpStatus,
+        expectedCode: String,
+        expectedField: String?,
+    ) {
+        val response = call.execute(rest)
 
-    private fun fieldsOf(body: JsonNode): Set<String> = body.get("errors").mapNotNull { it.get("field")?.asText() }.toSet()
-
-    @Test
-    fun `unknown paths answer 404 with the shared error shape`() {
-        val response = rest.getForEntity("/api/v1/does-not-exist", JsonNode::class.java)
-
-        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
-        assertEquals(404, response.body!!.get("status").asInt())
-        assertEquals(listOf("NOT_FOUND"), codesOf(response.body!!))
+        assertEquals(expectedStatus, response.statusCode)
+        assertEquals(expectedStatus.value(), response.body!!.get("status").asInt())
+        assertEquals(listOf(expectedCode), codesOf(response.body!!))
+        expectedField?.let { assertEquals(setOf(it), fieldsOf(response.body!!)) }
     }
 
     @Test
@@ -46,19 +56,6 @@ class BngrErrorContractIT(@Autowired private val rest: TestRestTemplate) {
         assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
         assertEquals(listOf("UNKNOWN_PARAMETER", "UNKNOWN_PARAMETER"), codesOf(response.body!!))
         assertEquals(setOf("foo", "bar"), fieldsOf(response.body!!))
-    }
-
-    @Test
-    fun `unknown body fields are rejected instead of silently ignored`() {
-        val response = rest.postForEntity(
-            "/api/v1/auth/login",
-            mapOf("email" to "felix.junghans@breuninger.de", "password" to "breuninger-demo", "remember" to true),
-            JsonNode::class.java,
-        )
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
-        assertEquals(listOf("UNKNOWN_FIELD"), codesOf(response.body!!))
-        assertEquals(setOf("remember"), fieldsOf(response.body!!))
     }
 
     @Test
@@ -78,42 +75,6 @@ class BngrErrorContractIT(@Autowired private val rest: TestRestTemplate) {
         assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
         assertTrue(codesOf(response.body!!).all { it == "FIELD_INVALID" })
         assertEquals(setOf("email", "password"), fieldsOf(response.body!!))
-    }
-
-    @Test
-    fun `invalid enum value points at the offending field`() {
-        val response = rest.postForEntity(
-            "/api/v1/auth/register",
-            mapOf(
-                "email" to "someone@example.com",
-                "password" to "long-enough-1",
-                "firstName" to "Some",
-                "lastName" to "One",
-                "gender" to "OTHER",
-            ),
-            JsonNode::class.java,
-        )
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
-        assertEquals(listOf("FIELD_INVALID"), codesOf(response.body!!))
-        assertEquals(setOf("gender"), fieldsOf(response.body!!))
-    }
-
-    @Test
-    fun `wrong http method answers 405 with the allowed methods`() {
-        val response = rest.exchange("/api/v1/homefeed", HttpMethod.DELETE, HttpEntity<Void>(HttpHeaders()), JsonNode::class.java)
-
-        assertEquals(HttpStatus.METHOD_NOT_ALLOWED, response.statusCode)
-        assertEquals(listOf("METHOD_NOT_ALLOWED"), codesOf(response.body!!))
-    }
-
-    @Test
-    fun `malformed json answers 400 with MALFORMED_BODY`() {
-        val headers = HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON }
-        val response = rest.postForEntity("/api/v1/auth/login", HttpEntity("{not json", headers), JsonNode::class.java)
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
-        assertEquals(listOf("MALFORMED_BODY"), codesOf(response.body!!))
     }
 
     @Test
@@ -137,4 +98,68 @@ class BngrErrorContractIT(@Autowired private val rest: TestRestTemplate) {
 
         assertTrue(response.headers.contentType.toString().startsWith("application/problem+json"))
     }
+
+    /** SAM interface so heterogeneous requests fit one parameterized signature. */
+    fun interface BngrApiCall {
+        fun execute(rest: TestRestTemplate): ResponseEntity<JsonNode>
+    }
+
+    companion object {
+        private fun jsonHeaders() = HttpHeaders().apply { contentType = MediaType.APPLICATION_JSON }
+
+        @JvmStatic
+        fun singleErrorCases(): Stream<Arguments> = Stream.of(
+            Arguments.of(
+                "unknown path",
+                BngrApiCall { it.getForEntity("/api/v1/does-not-exist", JsonNode::class.java) },
+                HttpStatus.NOT_FOUND, "NOT_FOUND", null,
+            ),
+            Arguments.of(
+                "wrong http method",
+                BngrApiCall { it.exchange("/api/v1/homefeed", HttpMethod.DELETE, HttpEntity<Void>(HttpHeaders()), JsonNode::class.java) },
+                HttpStatus.METHOD_NOT_ALLOWED, "METHOD_NOT_ALLOWED", null,
+            ),
+            Arguments.of(
+                "malformed json body",
+                BngrApiCall { it.postForEntity("/api/v1/auth/login", HttpEntity("{not json", jsonHeaders()), JsonNode::class.java) },
+                HttpStatus.BAD_REQUEST, "MALFORMED_BODY", null,
+            ),
+            Arguments.of(
+                "unknown body field",
+                BngrApiCall {
+                    it.postForEntity(
+                        "/api/v1/auth/login",
+                        mapOf("email" to "felix.junghans@breuninger.de", "password" to "breuninger-demo", "remember" to true),
+                        JsonNode::class.java,
+                    )
+                },
+                HttpStatus.BAD_REQUEST, "UNKNOWN_FIELD", "remember",
+            ),
+            Arguments.of(
+                "invalid enum value",
+                BngrApiCall {
+                    it.postForEntity(
+                        "/api/v1/auth/register",
+                        mapOf(
+                            "email" to "someone@example.com",
+                            "password" to "long-enough-1",
+                            "firstName" to "Some",
+                            "lastName" to "One",
+                            "gender" to "OTHER",
+                        ),
+                        JsonNode::class.java,
+                    )
+                },
+                HttpStatus.BAD_REQUEST, "FIELD_INVALID", "gender",
+            ),
+        )
+
+        private fun codesOf(body: JsonNode): List<String> = body.get("errors").map { it.get("code").asText() }
+
+        private fun fieldsOf(body: JsonNode): Set<String> = body.get("errors").mapNotNull { it.get("field")?.takeIf { f -> !f.isNull }?.asText() }.toSet()
+    }
+
+    private fun codesOf(body: JsonNode): List<String> = Companion.codesOf(body)
+
+    private fun fieldsOf(body: JsonNode): Set<String> = Companion.fieldsOf(body)
 }
