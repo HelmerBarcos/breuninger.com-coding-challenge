@@ -1,0 +1,10 @@
+target
+.git
+.idea
+.vscode
+.claude
+.mvn/wrapper/maven-wrapper.jar
+docs
+sessions
+scripts
+*.md

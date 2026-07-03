@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: homefeed
+      POSTGRES_USER: homefeed
+      POSTGRES_PASSWORD: homefeed
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U homefeed"]
+      interval: 2s
+      retries: 15
+
+  app:
+    build:
+      context: .
+      target: dev
+    # only starts with --profile app (./scripts/dev start:debug --docker);
+    # `docker compose up postgres` keeps the DB-only mode untouched
+    profiles: ["app"]
+    ports:
+      - "8080:8080"
+      - "5005:5005" # JDWP remote debugger
+    volumes:
+      - ./src:/app/src
+      - ./target:/app/target
+      - maven-repo:/root/.m2
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/homefeed
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  maven-repo:
